@@ -1,4 +1,4 @@
-package frc.robot.Hardware.Interfaces;
+package frc.robot.HardwareDrivers.Abstractions;
 
 public interface LimitSwitch {
     boolean limitReached();

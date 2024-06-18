@@ -1,4 +1,4 @@
-package frc.robot.Hardware.Interfaces;
+package frc.robot.HardwareDrivers.Abstractions;
 
 public interface RelativePositionEncoder {
     default void setCurrentPositionAsZeroReading() {
@@ -7,4 +7,5 @@ public interface RelativePositionEncoder {
     void setCurrentPositionAs(double desiredReading);
 
     double getCurrentPosition();
+    double getCurrentVelocity();
 }
