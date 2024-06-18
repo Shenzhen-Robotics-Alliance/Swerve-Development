@@ -7,4 +7,9 @@ public interface AbsolutePositionEncoder {
     default Rotation2d getRotation2d() {
         return Rotation2d.fromRadians(getAbsoluteRotationRadian());
     }
+
+    default void setCurrentPositionAsZeroPosition() {
+        setCurrentReading(0);
+    }
+    void setCurrentReading(double currentReading);
 }
