@@ -1,4 +1,4 @@
-package frc.robot.HardwareDrivers.HelperImplements;
+package frc.robot.HardwareIOs.HelperImplements;
 
 public class GenericDCAbsoluteRotationEncoder extends GenericAbsoluteEncoder {
 

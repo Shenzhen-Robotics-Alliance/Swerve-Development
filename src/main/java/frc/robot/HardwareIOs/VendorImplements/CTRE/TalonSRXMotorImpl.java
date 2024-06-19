@@ -1,9 +1,9 @@
-package frc.robot.HardwareDrivers.VendorImplements.CTRE;
+package frc.robot.HardwareIOs.VendorImplements.CTRE;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.TalonSRXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-import frc.robot.HardwareDrivers.Abstractions.Motor;
+import frc.robot.HardwareIOs.Abstractions.Motor;
 
 /**
  * Motor implementation with TalonSRX

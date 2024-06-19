@@ -1,11 +1,11 @@
-package frc.robot.HardwareDrivers.VendorImplements.CTRE;
+package frc.robot.HardwareIOs.VendorImplements.CTRE;
 
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-import frc.robot.HardwareDrivers.HelperImplements.GenericRelativeEncoder;
-import frc.robot.HardwareDrivers.Abstractions.Motor;
-import frc.robot.HardwareDrivers.Abstractions.RelativePositionEncoderSynchronized;
+import frc.robot.HardwareIOs.HelperImplements.GenericRelativeEncoder;
+import frc.robot.HardwareIOs.Abstractions.Motor;
+import frc.robot.HardwareIOs.Abstractions.RelativePositionEncoderSynchronized;
 
 /**
  * Motor and RelativePositionEncoderSynchronized implementation with TalonFX

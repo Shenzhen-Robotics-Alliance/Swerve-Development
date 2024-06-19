@@ -1,7 +1,6 @@
-package frc.robot.HardwareDrivers.Abstractions;
+package frc.robot.HardwareIOs.Abstractions;
 
 import edu.wpi.first.math.geometry.Rotation2d;
-import frc.robot.Helpers.MathHelpers.AngleHelpers;
 
 public interface AbsoluteRotationEncoder {
     double getAbsoluteRotationRadian();
@@ -21,5 +20,4 @@ public interface AbsoluteRotationEncoder {
 
 
     double getAngularVelocity();
-
 }

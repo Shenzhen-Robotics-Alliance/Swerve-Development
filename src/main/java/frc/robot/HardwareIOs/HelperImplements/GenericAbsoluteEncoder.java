@@ -1,9 +1,8 @@
-package frc.robot.HardwareDrivers.HelperImplements;
+package frc.robot.HardwareIOs.HelperImplements;
 
-import frc.robot.HardwareDrivers.Abstractions.AbsoluteRotationEncoder;
+import frc.robot.HardwareIOs.Abstractions.AbsoluteRotationEncoder;
 import frc.robot.Helpers.MathHelpers.AngleHelpers;
 
-import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
 public class GenericAbsoluteEncoder implements AbsoluteRotationEncoder {

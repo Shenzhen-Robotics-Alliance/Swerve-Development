@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.UnitTests.UnitTest;
 import frc.robot.UnitTests.WheelsCalibration;
+import org.littletonrobotics.junction.inputs.LoggableInputs;
 
 public class Robot extends TimedRobot {
   private Command autonomousCommand;
@@ -12,7 +13,7 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
       robotContainer = new RobotContainer();
-    }
+  }
   @Override
   public void robotPeriodic() {
     CommandScheduler.getInstance().run();

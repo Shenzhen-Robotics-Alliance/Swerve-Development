@@ -1,7 +1,3 @@
-# readme
-
-Status: Done
-
 # The 🍁 Swerve Skeleton
 
 ---
@@ -10,11 +6,11 @@ Iron Maple’s Swerve Drive Skeleton Project
 
 Vision, Auto-Alignment, Decisive Auto, Advantage-Kit and Digital Twin, all set to go!
 
-<aside>
-⚖️ This project is under [GPLv3](https://www.gnu.org/licenses/gpl-3.0.en.html#license-text).
+Here's the improved version of your markdown text:
 
-</aside>
-
+> ⚖️ This project is based on the [Advanced Swerve Drive Example](https://github.com/Mechanical-Advantage/AdvantageKit/tree/main/example_projects/advanced_swerve_drive/src/main) from [AdvantageKit](https://github.com/Mechanical-Advantage/AdvantageKit/). Which is under [GPLv3](https://www.gnu.org/licenses/gpl-3.0.en.html#license-text) license.
+>
+> We extend our deepest appreciation to [Littleton Robotics](https://github.com/Mechanical-Advantage) for their efforts, which have made this project possible. All teams are welcome to use this project, provided that you adhere to the [AdvantageKit-License](./AdvantageKit-License.md) license.
 ## 🕹️Driving
 
 - **250HZ Odometer**, Time-Synchronized with CANFD

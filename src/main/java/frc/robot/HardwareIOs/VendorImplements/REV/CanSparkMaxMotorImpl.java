@@ -1,8 +1,8 @@
-package frc.robot.HardwareDrivers.VendorImplements.REV;
+package frc.robot.HardwareIOs.VendorImplements.REV;
 
 import com.revrobotics.CANSparkBase;
 import com.revrobotics.CANSparkMax;
-import frc.robot.HardwareDrivers.Abstractions.Motor;
+import frc.robot.HardwareIOs.Abstractions.Motor;
 
 /**
  * Motor implementation with CanSparkMax

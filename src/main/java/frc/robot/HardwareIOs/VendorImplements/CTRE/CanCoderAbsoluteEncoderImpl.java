@@ -1,9 +1,9 @@
-package frc.robot.HardwareDrivers.VendorImplements.CTRE;
+package frc.robot.HardwareIOs.VendorImplements.CTRE;
 
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.hardware.CANcoder;
-import frc.robot.HardwareDrivers.Abstractions.AbsoluteRotationEncoderSynchronized;
-import frc.robot.HardwareDrivers.HelperImplements.GenericAbsoluteEncoder;
+import frc.robot.HardwareIOs.Abstractions.AbsoluteRotationEncoderSynchronized;
+import frc.robot.HardwareIOs.HelperImplements.GenericAbsoluteEncoder;
 
 public class CanCoderAbsoluteEncoderImpl extends GenericAbsoluteEncoder implements AbsoluteRotationEncoderSynchronized {
     private final CANcoder phoenix6CANCoderInstance;

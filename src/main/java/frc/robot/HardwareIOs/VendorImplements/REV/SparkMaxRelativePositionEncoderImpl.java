@@ -1,7 +1,7 @@
-package frc.robot.HardwareDrivers.VendorImplements.REV;
+package frc.robot.HardwareIOs.VendorImplements.REV;
 
 import com.revrobotics.SparkRelativeEncoder;
-import frc.robot.HardwareDrivers.HelperImplements.GenericRelativeEncoder;
+import frc.robot.HardwareIOs.HelperImplements.GenericRelativeEncoder;
 
 /**
  * AbsolutePositionEncoder implementation with SparkMax Absolute Encoder

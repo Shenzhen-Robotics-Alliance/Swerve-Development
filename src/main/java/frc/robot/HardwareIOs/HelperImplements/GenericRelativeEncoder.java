@@ -1,8 +1,7 @@
-package frc.robot.HardwareDrivers.HelperImplements;
+package frc.robot.HardwareIOs.HelperImplements;
 
-import frc.robot.HardwareDrivers.Abstractions.RelativePositionEncoder;
+import frc.robot.HardwareIOs.Abstractions.RelativePositionEncoder;
 
-import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
 // helper class to calibrate a relative encoder
