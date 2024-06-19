@@ -4,13 +4,12 @@
 
 Iron Maple’s Swerve Drive Skeleton Project
 
-Vision, Auto-Alignment, Decisive Auto, Advantage-Kit and Digital Twin, all set to go!
+Swerve Kinematics, High-Freq Odometry, Log-Replay, Vision Odometry, Auto-Alignment, Decisive Auto, and Digital Twin, all set to go!
 
-Here's the improved version of your markdown text:
-
-> ⚖️ This project is based on the [Advanced Swerve Drive Example](https://github.com/Mechanical-Advantage/AdvantageKit/tree/main/example_projects/advanced_swerve_drive/src/main) from [AdvantageKit](https://github.com/Mechanical-Advantage/AdvantageKit/). Which is under [GPLv3](https://www.gnu.org/licenses/gpl-3.0.en.html#license-text) license.
+> 🙏 We extend our deepest appreciation to [Littleton Robotics](https://www.littletonrobotics.org/) for their [open source projects](https://github.com/Mechanical-Advantage), which have made this project possible.
 >
-> We extend our deepest appreciation to [Littleton Robotics](https://github.com/Mechanical-Advantage) for their efforts, which have made this project possible. All teams are welcome to use this project, provided that you adhere to the [AdvantageKit-License](./AdvantageKit-License.md) license.
+> ⚖️ This project is based on the [Advanced Swerve Drive Example](https://github.com/Mechanical-Advantage/AdvantageKit/tree/main/example_projects/advanced_swerve_drive/src/main) from [AdvantageKit](https://github.com/Mechanical-Advantage/AdvantageKit/), which is under the [GPLv3](https://www.gnu.org/licenses/gpl-3.0.en.html#license-text) license. All teams are welcome to use this project, provided that you adhere to the [Advantage Kit License](./AdvantageKit-License.md).
+
 ## 🕹️Driving
 
 - **250HZ Odometer**, Time-Synchronized with CANFD
