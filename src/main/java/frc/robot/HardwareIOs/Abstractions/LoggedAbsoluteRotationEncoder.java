@@ -1,11 +1,13 @@
-package frc.robot.HardwareIOs.HelperImplements;
+package frc.robot.HardwareIOs.Abstractions;
 
-import frc.robot.HardwareIOs.Abstractions.AbsoluteRotationEncoder;
 import frc.robot.Helpers.MathHelpers.AngleHelpers;
+import org.littletonrobotics.junction.LogTable;
+import org.littletonrobotics.junction.inputs.LoggableInputs;
 
 import java.util.function.Supplier;
 
-public class GenericAbsoluteEncoder implements AbsoluteRotationEncoder {
+public class LoggedAbsoluteRotationEncoder implements LoggedSensor {
+
     /* the position and velocity feeder (not calibrated but already inverted as needed) */
     private final Supplier<Double> uncalibratedPositionFeeder, velocityFeeder;
     private double zeroPosition;
@@ -13,24 +15,21 @@ public class GenericAbsoluteEncoder implements AbsoluteRotationEncoder {
     /**
      * the
      * */
-    public GenericAbsoluteEncoder(Supplier<Double> rawPositionFeeder, Supplier<Double> rawVelocityFeeder, boolean inverted) {
+    public LoggedAbsoluteRotationEncoder(Supplier<Double> rawPositionFeeder, Supplier<Double> rawVelocityFeeder, boolean inverted) {
         final double factor = inverted ? -1:1;
         this.uncalibratedPositionFeeder = () -> rawPositionFeeder.get() * factor;
         this.velocityFeeder = () -> rawVelocityFeeder.get() * factor;
         this.zeroPosition = 0;
     }
 
-    @Override
     public double getAbsoluteRotationRadian() {
         return AngleHelpers.simplifyAngle(AngleHelpers.getActualDifference(zeroPosition, uncalibratedPositionFeeder.get()));
     }
 
-    @Override
     public double getAngularVelocity() {
         return velocityFeeder.get();
     }
 
-    @Override
     public void setCurrentPositionAs(double actualRotation) {
         // when the actual rotation is actualRotation, the sensor reads uncalibratedPositionFeeder.getAsDouble()
         // when the actual rotation is zero, the sensor reads
@@ -42,8 +41,27 @@ public class GenericAbsoluteEncoder implements AbsoluteRotationEncoder {
         );
     }
 
-    @Override
     public void setZeroPosition(double zeroPosition) {
         this.zeroPosition = zeroPosition;
+    }
+
+    @Override
+    public void update() {
+
+    }
+
+    @Override
+    public String getName() {
+        return null;
+    }
+
+    @Override
+    public void toLog(LogTable table) {
+
+    }
+
+    @Override
+    public void fromLog(LogTable table) {
+
     }
 }
