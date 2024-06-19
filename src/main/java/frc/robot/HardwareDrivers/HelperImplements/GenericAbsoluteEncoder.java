@@ -4,30 +4,31 @@ import frc.robot.HardwareDrivers.Abstractions.AbsoluteRotationEncoder;
 import frc.robot.Helpers.MathHelpers.AngleHelpers;
 
 import java.util.function.DoubleSupplier;
+import java.util.function.Supplier;
 
 public class GenericAbsoluteEncoder implements AbsoluteRotationEncoder {
     /* the position and velocity feeder (not calibrated but already inverted as needed) */
-    private final DoubleSupplier uncalibratedPositionFeeder, velocityFeeder;
+    private final Supplier<Double> uncalibratedPositionFeeder, velocityFeeder;
     private double zeroPosition;
 
     /**
      * the
      * */
-    public GenericAbsoluteEncoder(DoubleSupplier rawPositionFeeder, DoubleSupplier rawVelocityFeeder, boolean inverted) {
+    public GenericAbsoluteEncoder(Supplier<Double> rawPositionFeeder, Supplier<Double> rawVelocityFeeder, boolean inverted) {
         final double factor = inverted ? -1:1;
-        this.uncalibratedPositionFeeder = () -> rawPositionFeeder.getAsDouble() * factor;
-        this.velocityFeeder = () -> rawVelocityFeeder.getAsDouble() * factor;
+        this.uncalibratedPositionFeeder = () -> rawPositionFeeder.get() * factor;
+        this.velocityFeeder = () -> rawVelocityFeeder.get() * factor;
         this.zeroPosition = 0;
     }
 
     @Override
     public double getAbsoluteRotationRadian() {
-        return AngleHelpers.simplifyAngle(AngleHelpers.getActualDifference(zeroPosition, uncalibratedPositionFeeder.getAsDouble()));
+        return AngleHelpers.simplifyAngle(AngleHelpers.getActualDifference(zeroPosition, uncalibratedPositionFeeder.get()));
     }
 
     @Override
     public double getAngularVelocity() {
-        return velocityFeeder.getAsDouble();
+        return velocityFeeder.get();
     }
 
     @Override
@@ -37,7 +38,7 @@ public class GenericAbsoluteEncoder implements AbsoluteRotationEncoder {
         //  uncalibratedPositionFeeder.getAsDouble() - getActualDifference(0, actualRotation)
         setZeroPosition(
                 AngleHelpers.simplifyAngle(
-                        uncalibratedPositionFeeder.getAsDouble() - AngleHelpers.getActualDifference(0, actualRotation)
+                        uncalibratedPositionFeeder.get() - AngleHelpers.getActualDifference(0, actualRotation)
                 )
         );
     }

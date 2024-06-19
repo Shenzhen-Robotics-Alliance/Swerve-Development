@@ -17,8 +17,8 @@ public class TalonFXMotorEncoderImpl extends GenericRelativeEncoder implements M
 
     public TalonFXMotorEncoderImpl(TalonFX talonFXInstance, boolean inverted) {
         super(
-                () -> talonFXInstance.getPosition().getValueAsDouble(),
-                () -> talonFXInstance.getVelocity().getValueAsDouble(),
+                talonFXInstance.getPosition().asSupplier(),
+                talonFXInstance.getVelocity().asSupplier(),
                 inverted
         );
         this.talonFXInstance = talonFXInstance;
