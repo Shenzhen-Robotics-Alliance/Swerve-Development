@@ -1,5 +1,6 @@
 package frc.robot.HardwareIOs.Abstractions;
 
+import frc.robot.Robot;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.inputs.LoggableInputs;
 
@@ -14,9 +15,10 @@ public interface LoggedSensor extends LoggableInputs {
     void update();
 
     /**
-     * gets the unique name of the instance
+     * gets the unique log path of the instance
+     * @return the path of the sensor, in the format "sensorType/sensorName", like "encoder/frontLeftWheelEncoder"
      * */
-    String getName();
+    String getSensorPath();
     Set<LoggedSensor> instances = new HashSet<>();
     static void register(LoggedSensor instance) {
         instances.add(instance);
@@ -28,8 +30,9 @@ public interface LoggedSensor extends LoggableInputs {
 
     static void updateSensors() {
         for (LoggedSensor instance:instances) {
-            instance.update();
-            Logger.processInputs("Sensors/" + instance.getName(), instance);
+            if (Robot.mode == Robot.Mode.REAL)
+                instance.update();
+            Logger.processInputs("Sensors/" + instance.getSensorPath(), instance);
         }
     }
 }

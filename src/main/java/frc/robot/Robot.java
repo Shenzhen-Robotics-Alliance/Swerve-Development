@@ -5,7 +5,6 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.HardwareIOs.Abstractions.LoggedSensor;
 import frc.robot.UnitTests.DigitalSwitchTest;
 import frc.robot.UnitTests.UnitTest;
-import frc.robot.UnitTests.WheelsCalibration;
 import org.littletonrobotics.junction.LogFileUtil;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
@@ -14,7 +13,7 @@ import org.littletonrobotics.junction.wpilog.WPILOGReader;
 import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 
 public class Robot extends LoggedRobot {
-    private enum Mode {
+    public enum Mode {
         REAL,
         REPLAY,
         SIMULATION

@@ -2,7 +2,6 @@
 //
 //import java.util.function.Supplier;
 //
-//// helper class to calibrate a relative encoder
 //public class GenericRelativeEncoder {
 //    /* feeds the current position or velocity (not calibrated but already inverted as needed) */
 //    private final Supplier<Double> uncalibratedPositionFeeder, velocityFeeder;

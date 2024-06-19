@@ -7,27 +7,60 @@ import org.littletonrobotics.junction.inputs.LoggableInputs;
 import java.util.function.Supplier;
 
 public class LoggedAbsoluteRotationEncoder implements LoggedSensor {
-
+    private final String name;
     /* the position and velocity feeder (not calibrated but already inverted as needed) */
-    private final Supplier<Double> uncalibratedPositionFeeder, velocityFeeder;
+    private final RawAnalogSensor rawAnalogSensor;
+    private final double factor;
     private double zeroPosition;
+    private double absoluteRotationRadian, angularVelocity;
 
-    /**
-     * the
-     * */
-    public LoggedAbsoluteRotationEncoder(Supplier<Double> rawPositionFeeder, Supplier<Double> rawVelocityFeeder, boolean inverted) {
-        final double factor = inverted ? -1:1;
-        this.uncalibratedPositionFeeder = () -> rawPositionFeeder.get() * factor;
-        this.velocityFeeder = () -> rawVelocityFeeder.get() * factor;
-        this.zeroPosition = 0;
+    public LoggedAbsoluteRotationEncoder(String name) {
+        this(name, null, false);
     }
 
+    public LoggedAbsoluteRotationEncoder(String name, RawAnalogSensor rawSensor, boolean inverted) {
+        this.name = name;
+        this.rawAnalogSensor = rawSensor;
+        this.factor = inverted ? -1:1;
+        this.zeroPosition = 0;
+        this.absoluteRotationRadian = 0;
+        this.angularVelocity = 0;
+
+        LoggedSensor.register(this);
+    }
+    @Override
+    public void update() {
+        if (rawAnalogSensor == null)
+            return;
+
+        this.absoluteRotationRadian = AngleHelpers.simplifyAngle(AngleHelpers.getActualDifference(zeroPosition, rawAnalogSensor.getValue() * factor));
+        this.angularVelocity = getUncalibratedPositionInvertedAsNeeded();
+    }
+
+    @Override
+    public String getSensorPath() {
+        return "AbsoluteRotationEncoder/" + name;
+    }
+
+    @Override
+    public void toLog(LogTable table) {
+        table.put("absoluteRotationRadian", absoluteRotationRadian);
+        table.put("angularVelocity", angularVelocity);
+    }
+
+    @Override
+    public void fromLog(LogTable table) {
+        absoluteRotationRadian = table.get("absoluteRotationRadian", 0);
+        angularVelocity = table.get("angularVelocity", 0);
+    }
+
+
     public double getAbsoluteRotationRadian() {
-        return AngleHelpers.simplifyAngle(AngleHelpers.getActualDifference(zeroPosition, uncalibratedPositionFeeder.get()));
+        return absoluteRotationRadian;
     }
 
     public double getAngularVelocity() {
-        return velocityFeeder.get();
+        return angularVelocity;
     }
 
     public void setCurrentPositionAs(double actualRotation) {
@@ -36,32 +69,16 @@ public class LoggedAbsoluteRotationEncoder implements LoggedSensor {
         //  uncalibratedPositionFeeder.getAsDouble() - getActualDifference(0, actualRotation)
         setZeroPosition(
                 AngleHelpers.simplifyAngle(
-                        uncalibratedPositionFeeder.get() - AngleHelpers.getActualDifference(0, actualRotation)
+                        getUncalibratedPositionInvertedAsNeeded() - AngleHelpers.getActualDifference(0, actualRotation)
                 )
         );
     }
 
+    private double getUncalibratedPositionInvertedAsNeeded() {
+        return rawAnalogSensor.getValue() * factor;
+    }
+
     public void setZeroPosition(double zeroPosition) {
         this.zeroPosition = zeroPosition;
-    }
-
-    @Override
-    public void update() {
-
-    }
-
-    @Override
-    public String getName() {
-        return null;
-    }
-
-    @Override
-    public void toLog(LogTable table) {
-
-    }
-
-    @Override
-    public void fromLog(LogTable table) {
-
     }
 }

@@ -4,14 +4,18 @@ import org.littletonrobotics.junction.LogTable;
 
 import java.util.function.Supplier;
 public class LoggedDigitalSwitch implements LoggedSensor {
-   private final String name;
-    private final Supplier<Boolean> booleanSupplier;
+    private final String name;
+    private final Supplier<Boolean> rawDigitalSwitch;
     private final boolean inverted;
     private boolean triggered;
 
-    public LoggedDigitalSwitch(String name, Supplier<Boolean> booleanSupplier, boolean inverted) {
+    public LoggedDigitalSwitch(String name) {
+        this(name, null, false);
+    }
+
+    public LoggedDigitalSwitch(String name, Supplier<Boolean> rawDigitalSwitch, boolean inverted) {
         this.name = name;
-        this.booleanSupplier = booleanSupplier;
+        this.rawDigitalSwitch = rawDigitalSwitch;
         this.inverted  = inverted;
         triggered = false;
         LoggedSensor.register(this);
@@ -19,7 +23,10 @@ public class LoggedDigitalSwitch implements LoggedSensor {
 
     @Override
     public void update() {
-        this.triggered = inverted == (this.booleanSupplier.get());
+        /* if it's just simulation, skip */
+        if (this.rawDigitalSwitch == null)
+            return;
+        this.triggered = inverted == (this.rawDigitalSwitch.get());
     }
 
     @Override
@@ -33,7 +40,7 @@ public class LoggedDigitalSwitch implements LoggedSensor {
     }
 
     @Override
-    public String getName() {
+    public String getSensorPath() {
         return "DigitalSwitches/" + name;
     }
 
