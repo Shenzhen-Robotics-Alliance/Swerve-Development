@@ -2,7 +2,7 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.HardwareIOs.Abstractions.LoggedSensor;
+import frc.robot.HardwareIOs.Helpers.PeriodicallyUpdatedInputs;
 import frc.robot.UnitTests.DigitalSwitchTest;
 import frc.robot.UnitTests.UnitTest;
 import org.littletonrobotics.junction.LogFileUtil;
@@ -18,21 +18,25 @@ public class Robot extends LoggedRobot {
         REPLAY,
         SIMULATION
     }
-    public static final Mode mode = isReal() ? Mode.REAL : Mode.REPLAY;
+    public static final Mode mode = isReal() ? Mode.REAL : Mode.SIMULATION;
     private Command autonomousCommand;
     private RobotContainer robotContainer;
+
+    public Robot() {
+        super(1/60.0);
+    }
 
     @Override
     public void robotInit() {
         // Set up data receivers & replay source
         switch (mode) {
             case REAL -> {
-                // Running on a real robot, log to a USB stick ("/U/logs")
+                // when running on a real robot, log to a USB stick ("/U/logs")
                 Logger.addDataReceiver(new WPILOGWriter());
                 Logger.addDataReceiver(new NT4Publisher());
             }
             case SIMULATION -> {
-                // Running a physics simulator, log to NT
+                // when running on a simulator, log the outputs only
                 Logger.addDataReceiver(new NT4Publisher());
             }
             case REPLAY -> {
@@ -52,7 +56,7 @@ public class Robot extends LoggedRobot {
 
     @Override
     public void robotPeriodic() {
-        LoggedSensor.updateSensors();
+        PeriodicallyUpdatedInputs.updateInputs();
         CommandScheduler.getInstance().run();
     }
 
