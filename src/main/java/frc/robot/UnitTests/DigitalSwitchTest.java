@@ -8,12 +8,14 @@ import org.littletonrobotics.junction.Logger;
 
 public class DigitalSwitchTest implements UnitTest {
     private final XboxController xboxController = new XboxController(0);
-    private final LoggedDigitalSwitch loggedDigitalSwitch = Robot.mode == Robot.Mode.REAL ?
-            new LoggedDigitalSwitch(
-                    "test switch 1",
-                    RawDigitalSwitch.simpleRawDigitalInput(xboxController::getAButton)
-            )
-            : new LoggedDigitalSwitch("test switch 1");
+    private final LoggedDigitalSwitch loggedDigitalSwitch = switch (Robot.mode) {
+        case REAL, SIMULATION -> new LoggedDigitalSwitch(
+                "test switch 1",
+                RawDigitalSwitch.simpleRawDigitalInput(xboxController::getAButton)
+        );
+        case REPLAY -> new LoggedDigitalSwitch("test switch 1");
+    };
+
     @Override
     public void testStart() {
 

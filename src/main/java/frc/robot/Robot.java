@@ -18,7 +18,7 @@ public class Robot extends LoggedRobot {
         REPLAY,
         SIMULATION
     }
-    public static final Mode mode = isReal() ? Mode.REAL : Mode.SIMULATION;
+    public static final Mode mode = isReal() ? Mode.REAL : Mode.REPLAY;
     private Command autonomousCommand;
     private RobotContainer robotContainer;
 
@@ -30,13 +30,9 @@ public class Robot extends LoggedRobot {
     public void robotInit() {
         // Set up data receivers & replay source
         switch (mode) {
-            case REAL -> {
+            case REAL, SIMULATION -> {
                 // when running on a real robot, log to a USB stick ("/U/logs")
                 Logger.addDataReceiver(new WPILOGWriter());
-                Logger.addDataReceiver(new NT4Publisher());
-            }
-            case SIMULATION -> {
-                // when running on a simulator, log the outputs only
                 Logger.addDataReceiver(new NT4Publisher());
             }
             case REPLAY -> {
