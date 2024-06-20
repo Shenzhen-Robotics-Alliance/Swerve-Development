@@ -1,7 +1,7 @@
-package frc.robot.HardwareIOs.Helpers;
+package frc.robot.HardwareIO.Helpers;
 
 import edu.wpi.first.math.geometry.Rotation2d;
-import frc.robot.HardwareIOs.Abstractions.RawEncoder;
+import frc.robot.HardwareIO.Abstractions.RawEncoder;
 import frc.robot.Helpers.MathHelpers.AngleHelpers;
 
 public class LoggedGyro implements PeriodicallyUpdatedInputs.PeriodicallyUpdatedInput {
@@ -25,14 +25,18 @@ public class LoggedGyro implements PeriodicallyUpdatedInputs.PeriodicallyUpdated
     }
 
     public Rotation2d getRobotRotation2d() {
-        return Rotation2d.fromRadians(AngleHelpers.getActualDifference(rawReadingAtZeroPosition, inputs.getUncalibratedEncoderPosition()));
+        return Rotation2d.fromRadians(AngleHelpers.getActualDifference(rawReadingAtZeroPosition, inputs.uncalibratedEncoderPosition));
+    }
+
+    public double getAngularVelocity() {
+        return inputs.encoderVelocity;
     }
 
     public void setCurrentRotation2d(Rotation2d currentRotation2d) {
         // the robot is at currentRotation2d.getRadians() when the raw reading of the sensor is inputs.getUncalibratedEncoderPosition()
         // how much should the raw reading be when it is at zero position?
         this.rawReadingAtZeroPosition = AngleHelpers.simplifyAngle(
-                inputs.getUncalibratedEncoderPosition() + AngleHelpers.getActualDifference(currentRotation2d.getRadians(), 0)
+                inputs.uncalibratedEncoderPosition + AngleHelpers.getActualDifference(currentRotation2d.getRadians(), 0)
         );
     }
 }

@@ -1,6 +1,6 @@
-package frc.robot.HardwareIOs.Helpers;
+package frc.robot.HardwareIO.Helpers;
 
-import frc.robot.HardwareIOs.Abstractions.RawMotor;
+import frc.robot.HardwareIO.Abstractions.RawMotor;
 import frc.robot.RobotContainer;
 import org.littletonrobotics.junction.Logger;
 

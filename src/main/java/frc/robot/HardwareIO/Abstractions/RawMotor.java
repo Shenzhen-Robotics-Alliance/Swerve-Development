@@ -1,4 +1,4 @@
-package frc.robot.HardwareIOs.Abstractions;
+package frc.robot.HardwareIO.Abstractions;
 
 /**
  * a raw motor with adjustable output

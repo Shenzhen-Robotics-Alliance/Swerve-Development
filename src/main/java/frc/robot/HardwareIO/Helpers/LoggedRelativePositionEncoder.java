@@ -1,6 +1,6 @@
-package frc.robot.HardwareIOs.Helpers;
+package frc.robot.HardwareIO.Helpers;
 
-import frc.robot.HardwareIOs.Abstractions.RawEncoder;
+import frc.robot.HardwareIO.Abstractions.RawEncoder;
 import org.littletonrobotics.junction.Logger;
 
 public class LoggedRelativePositionEncoder implements PeriodicallyUpdatedInputs.PeriodicallyUpdatedInput {
@@ -28,14 +28,14 @@ public class LoggedRelativePositionEncoder implements PeriodicallyUpdatedInputs.
     }
 
     public void setCurrentPositionAs(double desiredReading) {
-        this.zeroPosition = inputs.getUncalibratedEncoderPosition() - desiredReading;
+        this.zeroPosition = inputs.uncalibratedEncoderPosition - desiredReading;
     }
 
     public double getCurrentPosition() {
-        return inputs.getUncalibratedEncoderPosition() - zeroPosition;
+        return inputs.uncalibratedEncoderPosition - zeroPosition;
     }
 
     public double getCurrentVelocity() {
-        return inputs.getEncoderVelocity();
+        return inputs.encoderVelocity;
     }
 }

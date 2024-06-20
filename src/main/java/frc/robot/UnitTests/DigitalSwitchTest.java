@@ -1,8 +1,8 @@
 package frc.robot.UnitTests;
 
 import edu.wpi.first.wpilibj.XboxController;
-import frc.robot.HardwareIOs.Abstractions.RawDigitalSwitch;
-import frc.robot.HardwareIOs.Helpers.LoggedDigitalSwitch;
+import frc.robot.HardwareIO.Abstractions.RawDigitalSwitch;
+import frc.robot.HardwareIO.Helpers.LoggedDigitalSwitch;
 import frc.robot.Robot;
 import org.littletonrobotics.junction.Logger;
 

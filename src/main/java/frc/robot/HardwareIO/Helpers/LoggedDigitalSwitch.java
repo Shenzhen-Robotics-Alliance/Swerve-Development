@@ -1,7 +1,6 @@
-package frc.robot.HardwareIOs.Helpers;
+package frc.robot.HardwareIO.Helpers;
 
-import frc.robot.HardwareIOs.Abstractions.RawDigitalSwitch;
-import org.littletonrobotics.junction.LogTable;
+import frc.robot.HardwareIO.Abstractions.RawDigitalSwitch;
 import org.littletonrobotics.junction.Logger;
 
 public class LoggedDigitalSwitch implements PeriodicallyUpdatedInputs.PeriodicallyUpdatedInput {
@@ -27,6 +26,6 @@ public class LoggedDigitalSwitch implements PeriodicallyUpdatedInputs.Periodical
     }
 
     public boolean isTriggered() {
-        return inputs.isTriggered();
+        return inputs.triggered;
     }
 }

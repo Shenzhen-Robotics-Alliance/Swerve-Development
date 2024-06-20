@@ -1,4 +1,4 @@
-package frc.robot.HardwareIOs.Abstractions;
+package frc.robot.HardwareIO.Abstractions;
 
 
 import org.littletonrobotics.junction.LogTable;
@@ -6,7 +6,7 @@ import org.littletonrobotics.junction.inputs.LoggableInputs;
 
 public interface RawEncoder {
     class RawEncoderInputs implements LoggableInputs {
-        private double uncalibratedEncoderPosition = 0, encoderVelocity = 0;
+        public double uncalibratedEncoderPosition = 0, encoderVelocity = 0;
 
         @Override
         public void toLog(LogTable table) {
@@ -18,14 +18,6 @@ public interface RawEncoder {
         public void fromLog(LogTable table) {
             uncalibratedEncoderPosition = table.get("uncalibratedEncoderPosition", 0);
             encoderVelocity = table.get("encoderVelocity", 0);
-        }
-
-        public double getUncalibratedEncoderPosition() {
-            return uncalibratedEncoderPosition;
-        }
-
-        public double getEncoderVelocity() {
-            return encoderVelocity;
         }
     }
     default void updateEncoderInputs(RawEncoderInputs inputs) {}

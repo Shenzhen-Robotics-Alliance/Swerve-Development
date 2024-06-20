@@ -1,4 +1,4 @@
-package frc.robot.HardwareIOs.Abstractions;
+package frc.robot.HardwareIO.Abstractions;
 
 import org.littletonrobotics.junction.LogTable;
 import org.littletonrobotics.junction.inputs.LoggableInputs;
@@ -7,7 +7,7 @@ import java.util.function.Supplier;
 
 public interface RawDigitalSwitch {
     class RawDigitalInput implements LoggableInputs {
-        private boolean triggered = false;
+        public boolean triggered = false;
 
         @Override
         public void toLog(LogTable table) {
@@ -17,10 +17,6 @@ public interface RawDigitalSwitch {
         @Override
         public void fromLog(LogTable table) {
             triggered = table.get("triggered", false);
-        }
-
-        public boolean isTriggered() {
-            return triggered;
         }
     }
     default void updateDigitalInputs(RawDigitalInput inputs) {}

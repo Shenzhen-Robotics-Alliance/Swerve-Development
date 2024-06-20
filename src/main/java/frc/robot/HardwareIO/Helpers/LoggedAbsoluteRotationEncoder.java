@@ -1,6 +1,6 @@
-package frc.robot.HardwareIOs.Helpers;
+package frc.robot.HardwareIO.Helpers;
 
-import frc.robot.HardwareIOs.Abstractions.RawEncoder;
+import frc.robot.HardwareIO.Abstractions.RawEncoder;
 import frc.robot.Helpers.MathHelpers.AngleHelpers;
 import org.littletonrobotics.junction.Logger;
 
@@ -30,11 +30,11 @@ public class LoggedAbsoluteRotationEncoder implements PeriodicallyUpdatedInputs.
     }
 
     public double getAbsoluteRotationRadian() {
-        return AngleHelpers.simplifyAngle(AngleHelpers.getActualDifference(zeroPosition, inputs.getUncalibratedEncoderPosition()));
+        return AngleHelpers.simplifyAngle(AngleHelpers.getActualDifference(zeroPosition, inputs.uncalibratedEncoderPosition));
     }
 
     public double getAngularVelocity() {
-        return inputs.getEncoderVelocity();
+        return inputs.encoderVelocity;
     }
 
     public void setZeroPosition(double zeroPosition) {

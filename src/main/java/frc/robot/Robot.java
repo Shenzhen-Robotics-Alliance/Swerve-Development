@@ -2,7 +2,7 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.HardwareIOs.Helpers.PeriodicallyUpdatedInputs;
+import frc.robot.HardwareIO.Helpers.PeriodicallyUpdatedInputs;
 import frc.robot.UnitTests.DigitalSwitchTest;
 import frc.robot.UnitTests.UnitTest;
 import org.littletonrobotics.junction.LogFileUtil;
