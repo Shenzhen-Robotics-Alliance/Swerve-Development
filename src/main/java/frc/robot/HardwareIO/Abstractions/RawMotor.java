@@ -20,5 +20,5 @@ public interface RawMotor {
      * sets the zero power behavior of the motion (if adjustable)
      * @param zeroPowerBehavior the behavior of the motor when the power is 0
      * */
-    void configureZeroPowerBehavior(ZeroPowerBehavior zeroPowerBehavior);
+    default void configureZeroPowerBehavior(ZeroPowerBehavior zeroPowerBehavior) {}
 }
