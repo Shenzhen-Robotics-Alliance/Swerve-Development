@@ -15,7 +15,7 @@ public abstract class LoggedMotor {
 
     protected LoggedMotor(String name, RawMotor rawMotor, int portOnPowerDistributionPanel) {
         this.rawMotor = rawMotor;
-        this.logPath = "/Motors/" + name + "/";
+        this.logPath = "/MotorOutputs/" + name + "/";
         this.portOnPowerDistributionPanel = portOnPowerDistributionPanel;
     }
 

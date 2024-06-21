@@ -4,7 +4,7 @@ import frc.robot.HardwareIO.Abstractions.RawEncoder;
 import org.littletonrobotics.junction.Logger;
 
 public class LoggedRelativePositionEncoder implements PeriodicallyUpdatedInputs.PeriodicallyUpdatedInput {
-    private final String name;
+    private final String sensorPath;
     /* the raw encoder (not calibrated but already inverted as needed) */
     private final RawEncoder rawEncoder;
     private final RawEncoder.RawEncoderInputs inputs;
@@ -13,7 +13,7 @@ public class LoggedRelativePositionEncoder implements PeriodicallyUpdatedInputs.
         this(name, new RawEncoder() {});
     }
     public LoggedRelativePositionEncoder(String name, RawEncoder rawEncoder) {
-        this.name = name;
+        this.sensorPath = "RelativePositionEncoder/" + name;
         this.rawEncoder = rawEncoder;
         this.inputs = new RawEncoder.RawEncoderInputs();
         this.zeroPosition = 0;
@@ -24,7 +24,8 @@ public class LoggedRelativePositionEncoder implements PeriodicallyUpdatedInputs.
     @Override
     public void update() {
         rawEncoder.updateEncoderInputs(inputs);
-        Logger.processInputs("Inputs/RelativePositionEncoder/" + name, inputs);
+        Logger.processInputs("RawInputs/" + sensorPath, inputs);
+        Logger.recordOutput("ProcessedInputs/" + sensorPath + "/currentPosition", getCurrentPosition());
     }
 
     public void setCurrentPositionAs(double desiredReading) {

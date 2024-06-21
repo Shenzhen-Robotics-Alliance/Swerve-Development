@@ -3,16 +3,17 @@ package frc.robot.HardwareIO.Helpers;
 import edu.wpi.first.math.geometry.Rotation2d;
 import frc.robot.HardwareIO.Abstractions.RawEncoder;
 import frc.robot.Helpers.MathHelpers.AngleHelpers;
+import org.littletonrobotics.junction.Logger;
 
 public class LoggedGyro implements PeriodicallyUpdatedInputs.PeriodicallyUpdatedInput {
-    private final String name;
+    private final String sensorPath;
     /* the position and velocity feeder (not calibrated but already inverted as needed) */
     private final RawEncoder rawEncoder;
     private final RawEncoder.RawEncoderInputs inputs;
     private double rawReadingAtZeroPosition;
 
     public LoggedGyro(String name, RawEncoder rawEncoder) {
-        this.name = name;
+        this.sensorPath = "RelativePositionEncoders/" + name;
         this.rawEncoder = rawEncoder;
         this.inputs = new RawEncoder.RawEncoderInputs();
 
@@ -22,6 +23,8 @@ public class LoggedGyro implements PeriodicallyUpdatedInputs.PeriodicallyUpdated
     @Override
     public void update() {
         this.rawEncoder.updateEncoderInputs(inputs);
+        Logger.processInputs("RawInputs/" + sensorPath, inputs);
+        Logger.recordOutput("ProcessedInputs/" + sensorPath + "/absoluteRotationRadian", getRobotRotation2d());
     }
 
     public Rotation2d getRobotRotation2d() {

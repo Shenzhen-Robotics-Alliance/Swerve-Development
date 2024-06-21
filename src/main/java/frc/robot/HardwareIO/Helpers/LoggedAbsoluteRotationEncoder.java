@@ -5,7 +5,7 @@ import frc.robot.Helpers.MathHelpers.AngleHelpers;
 import org.littletonrobotics.junction.Logger;
 
 public class LoggedAbsoluteRotationEncoder implements PeriodicallyUpdatedInputs.PeriodicallyUpdatedInput {
-    private final String name;
+    private final String sensorPath;
     /* the position and velocity feeder (not calibrated but already inverted as needed) */
     private final RawEncoder rawEncoder;
     private final RawEncoder.RawEncoderInputs inputs;
@@ -16,17 +16,20 @@ public class LoggedAbsoluteRotationEncoder implements PeriodicallyUpdatedInputs.
     }
 
     public LoggedAbsoluteRotationEncoder(String name, RawEncoder rawEncoder) {
-        this.name = name;
+        this.sensorPath = "AbsoluteRotationEncoders/" + name;
         this.rawEncoder = rawEncoder;
         this.inputs = new RawEncoder.RawEncoderInputs();
         this.zeroPosition = 0;
 
         PeriodicallyUpdatedInputs.register(this);
     }
+
     @Override
     public void update() {
         this.rawEncoder.updateEncoderInputs(inputs);
-        Logger.processInputs("RawInputs/" + "AbsoluteRotationEncoders/" + name, inputs);
+
+        Logger.processInputs("RawInputs/" + sensorPath, inputs);
+        Logger.recordOutput("ProcessedInputs/" + sensorPath + "/absoluteRotationRadian", getAbsoluteRotationRadian());
     }
 
     public double getAbsoluteRotationRadian() {
