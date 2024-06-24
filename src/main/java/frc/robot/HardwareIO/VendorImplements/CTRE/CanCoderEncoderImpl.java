@@ -2,9 +2,11 @@ package frc.robot.HardwareIO.VendorImplements.CTRE;
 
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.hardware.CANcoder;
-import frc.robot.HardwareIO.Abstractions.RawEncoder;
+import frc.robot.Constants;
+import frc.robot.HardwareIO.Abstractions.CTRETimeSynchronizedEncoder;
+import frc.robot.HardwareIO.Abstractions.ThreadedEncoder;
 
-public class CanCoderEncoderImpl implements RawEncoder {
+public class CanCoderEncoderImpl implements CTRETimeSynchronizedEncoder {
     private final CANcoder canCoderInstance;
     private final StatusSignal<Double> positionSignal, velocitySignal;
 
@@ -22,5 +24,16 @@ public class CanCoderEncoderImpl implements RawEncoder {
         velocitySignal.refresh();
         inputs.uncalibratedEncoderPosition = positionSignal.getValue();
         inputs.encoderVelocity = velocitySignal.getValue();
+    }
+
+    @Override
+    public ThreadedEncoder toThreadedEncoder() {
+        this.positionSignal.setUpdateFrequency(Constants.ChassisConfigs.ODOMETER_FREQ, 5.0/ Constants.ChassisConfigs.ODOMETER_FREQ);
+        return new ThreadedEncoder(this);
+    }
+
+    @Override
+    public StatusSignal<Double> getPositionSignal() {
+        return positionSignal;
     }
 }

@@ -9,10 +9,10 @@ public final class PeriodicallyUpdatedInputs {
         void update();
     }
 
-    static void register(PeriodicallyUpdatedInput input) {
+    public static void register(PeriodicallyUpdatedInput input) {
         inputs.add(input);
     }
-    static void cancelRegister(PeriodicallyUpdatedInput input) {
+    public static void cancelRegister(PeriodicallyUpdatedInput input) {
         inputs.remove(input);
     }
 
