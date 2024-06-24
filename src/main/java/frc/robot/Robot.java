@@ -18,7 +18,7 @@ public class Robot extends LoggedRobot {
         REPLAY,
         SIMULATION
     }
-    public static final Mode mode = isReal() ? Mode.REAL : Mode.REPLAY;
+    public static final Mode mode = isReal() ? Mode.REAL : Mode.SIMULATION;
     private Command autonomousCommand;
     private RobotContainer robotContainer;
 
