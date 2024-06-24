@@ -1,5 +1,7 @@
-package frc.robot.HardwareIO.Abstractions;
+package frc.robot.HardwareIO.Helpers;
 
+import frc.robot.HardwareIO.Abstractions.RawEncoder;
+import frc.robot.Helpers.ArrayHelpers;
 import org.littletonrobotics.junction.LogTable;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.inputs.LoggableInputs;
@@ -24,23 +26,27 @@ public class ThreadedEncoder {
         this.rawEncoder = rawEncoder;
     }
 
-    class ThreadedEncoderInputs implements LoggableInputs {
+    public static final class ThreadedEncoderInputs implements LoggableInputs {
         public List<Double>
                 uncalibratedEncoderPosition = new ArrayList<>(),
                 timeStamps = new ArrayList<>();
-        public double encoderVelocity = 0;
+        public double encoderVelocity = 0, latestUncalibratedPosition = 0;
 
         @Override
         public void toLog(LogTable table) {
-            table.put("uncalibratedEncoderPosition", toArray(uncalibratedEncoderPosition));
-            table.put("timeStamps", toArray(timeStamps));
+            table.put("uncalibratedEncoderPosition", ArrayHelpers.toDoubleArray(uncalibratedEncoderPosition));
+            table.put("timeStamps", ArrayHelpers.toDoubleArray(timeStamps));
+
+            table.put("latestUncalibratedPosition", latestUncalibratedPosition);
             table.put("encoderVelocity", encoderVelocity);
         }
 
         @Override
         public void fromLog(LogTable table) {
-            toList(table.get("uncalibratedEncoderPosition", new double[]{}), uncalibratedEncoderPosition);
-            toList(table.get("timeStamps", new double[]{}), timeStamps);
+            ArrayHelpers.toDoubleList(table.get("uncalibratedEncoderPosition", new double[]{}), uncalibratedEncoderPosition);
+            ArrayHelpers.toDoubleList(table.get("timeStamps", new double[]{}), timeStamps);
+
+            latestUncalibratedPosition = table.get("latestUncalibratedPosition", 0);
             encoderVelocity = table.get("encoderVelocity", 0);
         }
     }
@@ -62,18 +68,7 @@ public class ThreadedEncoder {
         timeStampsQueue.clear();
 
         inputs.encoderVelocity = rawEncoderInputs.encoderVelocity;
-    }
-
-    public static double[] toArray(List<Double> originalList) {
-        double[] array = new double[originalList.size()];
-        for (int i = 0; i < originalList.size(); i++)
-            array[i] = originalList.get(i);
-        return array;
-    }
-
-    public static void toList(double[] data, List<Double> targetList) {
-        targetList.clear();
-        for (double d:data)
-            targetList.add(d);
+        if (!inputs.uncalibratedEncoderPosition.isEmpty())
+            inputs.latestUncalibratedPosition = inputs.uncalibratedEncoderPosition.get(inputs.uncalibratedEncoderPosition.size()-1);
     }
 }

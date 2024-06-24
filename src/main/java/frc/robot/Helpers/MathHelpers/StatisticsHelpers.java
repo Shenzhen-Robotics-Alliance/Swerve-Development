@@ -57,11 +57,4 @@ public final class StatisticsHelpers {
         final double slope = getBestFitLineSlope(dataSetX, dataSetY);
         return getMean(dataSetY) - slope * getMean(dataSetX);
     }
-
-    public static double[] toArray(List<Double> doubleList) {
-        double[] result = new double[doubleList.size()];int i = 0;
-        for (double d: doubleList)
-            result[i++] = d;
-        return result;
-    }
 }

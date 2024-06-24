@@ -4,7 +4,7 @@ import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.hardware.CANcoder;
 import frc.robot.Constants;
 import frc.robot.HardwareIO.Abstractions.CTRETimeSynchronizedEncoder;
-import frc.robot.HardwareIO.Abstractions.ThreadedEncoder;
+import frc.robot.HardwareIO.Helpers.ThreadedEncoder;
 
 public class CanCoderEncoderImpl implements CTRETimeSynchronizedEncoder {
     private final CANcoder canCoderInstance;

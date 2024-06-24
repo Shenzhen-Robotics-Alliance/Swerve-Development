@@ -5,9 +5,8 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import frc.robot.Constants;
 import frc.robot.HardwareIO.Abstractions.CTRETimeSynchronizedEncoder;
-import frc.robot.HardwareIO.Abstractions.RawEncoder;
 import frc.robot.HardwareIO.Abstractions.RawMotor;
-import frc.robot.HardwareIO.Abstractions.ThreadedEncoder;
+import frc.robot.HardwareIO.Helpers.ThreadedEncoder;
 
 public class TalonFXMotorAndEncoderImpl implements RawMotor, CTRETimeSynchronizedEncoder {
     private final TalonFX talonFXInstance;
