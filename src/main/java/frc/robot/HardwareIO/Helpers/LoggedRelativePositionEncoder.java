@@ -39,12 +39,12 @@ public class LoggedRelativePositionEncoder implements PeriodicallyUpdatedInputs.
         threadedEncoder.processCachedInputs(inputs);
         processCachedInputs();
 
-        Logger.processInputs(Constants.LogConfigs.sensorInputsPath + sensorPath, inputs);
-        Logger.recordOutput(Constants.LogConfigs.sensorProcessedInputsPath + sensorPath + "/zeroPosition", zeroPosition);
-        Logger.recordOutput(Constants.LogConfigs.sensorProcessedInputsPath + sensorPath + "/velocity", getVelocity());
-        Logger.recordOutput(Constants.LogConfigs.sensorProcessedInputsPath + sensorPath + "/latestPosition", getLatestPosition());
-        Logger.recordOutput(Constants.LogConfigs.sensorProcessedInputsPath + sensorPath + "/positions", getPositions());
-        Logger.recordOutput(Constants.LogConfigs.sensorProcessedInputsPath + sensorPath + "/timeStamps", getTimeStamps());
+        Logger.processInputs(Constants.LogConfigs.SENSORS_INPUTS_PATH + sensorPath, inputs);
+        Logger.recordOutput(Constants.LogConfigs.SENSORS_PROCESSED_INPUTS_PATH + sensorPath + "/zeroPosition", zeroPosition);
+        Logger.recordOutput(Constants.LogConfigs.SENSORS_PROCESSED_INPUTS_PATH + sensorPath + "/velocity", getVelocity());
+        Logger.recordOutput(Constants.LogConfigs.SENSORS_PROCESSED_INPUTS_PATH + sensorPath + "/latestPosition", getLatestPosition());
+        Logger.recordOutput(Constants.LogConfigs.SENSORS_PROCESSED_INPUTS_PATH + sensorPath + "/positions", getPositions());
+        Logger.recordOutput(Constants.LogConfigs.SENSORS_PROCESSED_INPUTS_PATH + sensorPath + "/timeStamps", getTimeStamps());
     }
 
     private void processCachedInputs() {

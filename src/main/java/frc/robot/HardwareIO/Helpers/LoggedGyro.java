@@ -42,11 +42,11 @@ public class LoggedGyro implements PeriodicallyUpdatedInputs.PeriodicallyUpdated
         processCachedInputs();
 
         Logger.processInputs("RawInputs/" + sensorPath, inputs);
-        Logger.recordOutput(Constants.LogConfigs.sensorProcessedInputsPath + sensorPath + "/rawReadingAtZeroPosition", rawReadingAtZeroPosition);
-        Logger.recordOutput(Constants.LogConfigs.sensorProcessedInputsPath + sensorPath + "/getAngularVelocity", getAngularVelocity());
-        Logger.recordOutput(Constants.LogConfigs.sensorProcessedInputsPath + sensorPath + "/latestRobotRotation2d", getLatestRobotRotation2d());
-        Logger.recordOutput(Constants.LogConfigs.sensorProcessedInputsPath + sensorPath + "/robotFacings", getRobotFacings());
-        Logger.recordOutput(Constants.LogConfigs.sensorProcessedInputsPath + sensorPath + "/timeStamps", getTimeStamps());
+        Logger.recordOutput(Constants.LogConfigs.SENSORS_PROCESSED_INPUTS_PATH + sensorPath + "/rawReadingAtZeroPosition", rawReadingAtZeroPosition);
+        Logger.recordOutput(Constants.LogConfigs.SENSORS_PROCESSED_INPUTS_PATH + sensorPath + "/getAngularVelocity", getAngularVelocity());
+        Logger.recordOutput(Constants.LogConfigs.SENSORS_PROCESSED_INPUTS_PATH + sensorPath + "/latestRobotRotation2d", getLatestRobotRotation2d());
+        Logger.recordOutput(Constants.LogConfigs.SENSORS_PROCESSED_INPUTS_PATH + sensorPath + "/robotFacings", getRobotFacings());
+        Logger.recordOutput(Constants.LogConfigs.SENSORS_PROCESSED_INPUTS_PATH + sensorPath + "/timeStamps", getTimeStamps());
     }
 
     private void processCachedInputs() {

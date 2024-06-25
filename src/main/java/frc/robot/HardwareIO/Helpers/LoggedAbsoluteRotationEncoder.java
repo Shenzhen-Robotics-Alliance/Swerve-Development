@@ -41,12 +41,12 @@ public class LoggedAbsoluteRotationEncoder implements PeriodicallyUpdatedInputs.
         this.threadedEncoder.processCachedInputs(inputs);
         processAbsoluteRotations();
 
-        Logger.processInputs(Constants.LogConfigs.sensorInputsPath + sensorPath, inputs);
-        Logger.recordOutput(Constants.LogConfigs.sensorProcessedInputsPath + sensorPath + "/zeroPosition", zeroPosition);
-        Logger.recordOutput(Constants.LogConfigs.sensorProcessedInputsPath + sensorPath + "/angularVelocity", getAngularVelocity());
-        Logger.recordOutput(Constants.LogConfigs.sensorProcessedInputsPath + sensorPath + "/latestAbsoluteRotationRadian", getLatestAbsoluteRotationRadian());
-        Logger.recordOutput(Constants.LogConfigs.sensorProcessedInputsPath + sensorPath + "/absoluteRotationsRadian", getAbsoluteRotations());
-        Logger.recordOutput(Constants.LogConfigs.sensorProcessedInputsPath + sensorPath + "/timeStamps", getTimeStamps());
+        Logger.processInputs(Constants.LogConfigs.SENSORS_INPUTS_PATH + sensorPath, inputs);
+        Logger.recordOutput(Constants.LogConfigs.SENSORS_PROCESSED_INPUTS_PATH + sensorPath + "/zeroPosition", zeroPosition);
+        Logger.recordOutput(Constants.LogConfigs.SENSORS_PROCESSED_INPUTS_PATH + sensorPath + "/angularVelocity", getAngularVelocity());
+        Logger.recordOutput(Constants.LogConfigs.SENSORS_PROCESSED_INPUTS_PATH + sensorPath + "/latestAbsoluteRotationRadian", getLatestAbsoluteRotationRadian());
+        Logger.recordOutput(Constants.LogConfigs.SENSORS_PROCESSED_INPUTS_PATH + sensorPath + "/absoluteRotationsRadian", getAbsoluteRotations());
+        Logger.recordOutput(Constants.LogConfigs.SENSORS_PROCESSED_INPUTS_PATH + sensorPath + "/timeStamps", getTimeStamps());
     }
 
     private void processAbsoluteRotations() {

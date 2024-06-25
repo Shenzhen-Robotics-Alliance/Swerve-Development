@@ -4,7 +4,7 @@ import frc.robot.HardwareIO.Abstractions.RawMotor;
 import frc.robot.RobotContainer;
 import org.littletonrobotics.junction.Logger;
 
-public abstract class LoggedMotor {
+public class LoggedMotor {
     private final RawMotor rawMotor;
     private final String logPath;
     private final int portOnPowerDistributionPanel;
@@ -13,7 +13,7 @@ public abstract class LoggedMotor {
         this(name, rawMotor, -1);
     }
 
-    protected LoggedMotor(String name, RawMotor rawMotor, int portOnPowerDistributionPanel) {
+    public LoggedMotor(String name, RawMotor rawMotor, int portOnPowerDistributionPanel) {
         this.rawMotor = rawMotor;
         this.logPath = "/MotorOutputs/" + name + "/";
         this.portOnPowerDistributionPanel = portOnPowerDistributionPanel;
