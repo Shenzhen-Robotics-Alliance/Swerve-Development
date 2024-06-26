@@ -1,0 +1,4 @@
+<WheelCalibration>
+    <frontLeftMotor type="int">2</frontLeftMotor>
+    <frontLeftSteerZeroPosition type="double">0.6</frontLeftSteerZeroPosition>
+</WheelCalibration>
