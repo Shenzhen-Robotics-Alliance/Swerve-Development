@@ -2,30 +2,31 @@ package frc.robot.HardwareIO.Helpers;
 
 import frc.robot.Constants;
 import frc.robot.HardwareIO.Abstractions.RawEncoder;
+import frc.robot.HardwareIO.Abstractions.TimeStampedEncoder;
 import frc.robot.Helpers.ArrayHelpers;
 import org.littletonrobotics.junction.Logger;
 
 public class LoggedRelativePositionEncoder implements PeriodicallyUpdatedInputs.PeriodicallyUpdatedInput {
     private final String sensorPath;
     private boolean isEncoderThreaded;
-    private final ThreadedEncoder threadedEncoder;
-    private final ThreadedEncoder.ThreadedEncoderInputs inputs;
+    private final TimeStampedEncoder timeStampedEncoder;
+    private final TimeStampedEncoder.TimeStampedEncoderInputs inputs;
 
     private double[] relativePositions = new double[] {};
     private double zeroPosition;
     public LoggedRelativePositionEncoder(String name) {
-        this(name, new ThreadedEncoder(null, null));
+        this(name, new TimeStampedEncoderReplay());
     }
 
     public LoggedRelativePositionEncoder(String name, RawEncoder rawEncoder) {
-        this(name, new ThreadedEncoder(null, rawEncoder));
+        this(name, new TimeStampedEncoderReal(null, rawEncoder));
         this.isEncoderThreaded = false;
     }
 
-    public LoggedRelativePositionEncoder(String name, ThreadedEncoder threadedEncoder) {
+    public LoggedRelativePositionEncoder(String name, TimeStampedEncoder timeStampedEncoder) {
         this.sensorPath = "RelativePositionEncoder/" + name;
-        this.threadedEncoder = threadedEncoder;
-        this.inputs = new ThreadedEncoder.ThreadedEncoderInputs();
+        this.timeStampedEncoder = timeStampedEncoder;
+        this.inputs = new TimeStampedEncoder.TimeStampedEncoderInputs();
         this.zeroPosition = 0;
         this.isEncoderThreaded = true;
 
@@ -34,9 +35,9 @@ public class LoggedRelativePositionEncoder implements PeriodicallyUpdatedInputs.
 
     @Override
     public void update() {
-        if (!isEncoderThreaded) threadedEncoder.pollHighFreqPositionReadingFromEncoder();
+        if (!isEncoderThreaded) timeStampedEncoder.pollPositionReadingToCache();
 
-        threadedEncoder.processCachedInputs(inputs);
+        this.timeStampedEncoder.processInputsUsingCachedReadings(inputs);
         Logger.processInputs(Constants.LogConfigs.SENSORS_INPUTS_PATH + sensorPath, inputs);
 
         processCachedInputs();

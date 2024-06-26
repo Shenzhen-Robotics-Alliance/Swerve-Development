@@ -5,7 +5,7 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import frc.robot.HardwareIO.Helpers.LoggedAbsoluteRotationEncoder;
 import frc.robot.HardwareIO.Helpers.LoggedMotor;
 import frc.robot.HardwareIO.Helpers.LoggedRelativePositionEncoder;
-import frc.robot.HardwareIO.Helpers.ThreadedEncoder;
+import frc.robot.HardwareIO.Helpers.TimeStampedEncoderReal;
 import org.littletonrobotics.junction.Logger;
 
 import java.util.ArrayList;
@@ -47,7 +47,7 @@ public class GenericSwerveModule extends SwerveModuleLogic {
         Logger.recordOutput("steer encoder rotation (rad)", steerEncoder.getLatestAbsoluteRotationRadian());
     }
 
-    public List<ThreadedEncoder> getOdometryEncoders() {
+    public List<TimeStampedEncoderReal> getOdometryEncoders() {
         /* for a generic odometry, we do not update any encoder in the odometer thread */
         return new ArrayList<>();
     }

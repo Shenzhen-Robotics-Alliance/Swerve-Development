@@ -3,6 +3,7 @@ package frc.robot.HardwareIO.Helpers;
 import edu.wpi.first.math.geometry.Rotation2d;
 import frc.robot.Constants;
 import frc.robot.HardwareIO.Abstractions.RawEncoder;
+import frc.robot.HardwareIO.Abstractions.TimeStampedEncoder;
 import frc.robot.Helpers.ArrayHelpers;
 import frc.robot.Helpers.MathHelpers.AngleHelpers;
 import org.littletonrobotics.junction.Logger;
@@ -10,25 +11,25 @@ import org.littletonrobotics.junction.Logger;
 public class LoggedGyro implements PeriodicallyUpdatedInputs.PeriodicallyUpdatedInput {
     private final String sensorPath;
     private boolean isEncoderThreaded;
-    private final ThreadedEncoder threadedEncoder;
-    private final ThreadedEncoder.ThreadedEncoderInputs inputs;
+    private final TimeStampedEncoder timeStampedEncoder;
+    private final TimeStampedEncoder.TimeStampedEncoderInputs inputs;
 
     private Rotation2d[] robotFacings = new Rotation2d[0];
     private double rawReadingAtZeroPosition;
 
     public LoggedGyro(String name) {
-        this(name, new ThreadedEncoder(null, null));
+        this(name, new TimeStampedEncoderReplay());
     }
 
     public LoggedGyro(String name, RawEncoder rawEncoder) {
-        this(name, new ThreadedEncoder(null, rawEncoder));
+        this(name, new TimeStampedEncoderReal(null, rawEncoder));
         this.isEncoderThreaded = false;
     }
 
-    public LoggedGyro(String name, ThreadedEncoder threadedEncoder) {
+    public LoggedGyro(String name, TimeStampedEncoder timeStampedEncoder) {
         this.sensorPath = "RelativePositionEncoders/" + name;
-        this.threadedEncoder = threadedEncoder;
-        this.inputs = new ThreadedEncoder.ThreadedEncoderInputs();
+        this.timeStampedEncoder = timeStampedEncoder;
+        this.inputs = new TimeStampedEncoder.TimeStampedEncoderInputs();
         this.isEncoderThreaded = true;
 
         this.rawReadingAtZeroPosition = 0;
@@ -37,9 +38,9 @@ public class LoggedGyro implements PeriodicallyUpdatedInputs.PeriodicallyUpdated
 
     @Override
     public void update() {
-        if (!isEncoderThreaded) this.threadedEncoder.pollHighFreqPositionReadingFromEncoder();
+        if (!isEncoderThreaded) this.timeStampedEncoder.pollPositionReadingToCache();
 
-        this.threadedEncoder.processCachedInputs(inputs);
+        this.timeStampedEncoder.processInputsUsingCachedReadings(inputs);
         Logger.processInputs("RawInputs/" + sensorPath, inputs);
 
         processCachedInputs();

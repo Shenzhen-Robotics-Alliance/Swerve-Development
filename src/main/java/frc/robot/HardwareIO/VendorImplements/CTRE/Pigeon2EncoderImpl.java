@@ -2,9 +2,8 @@ package frc.robot.HardwareIO.VendorImplements.CTRE;
 
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.hardware.Pigeon2;
-import frc.robot.Constants;
 import frc.robot.HardwareIO.Abstractions.CTRETimeSynchronizedEncoder;
-import frc.robot.HardwareIO.Helpers.ThreadedEncoder;
+import frc.robot.HardwareIO.Helpers.TimeStampedEncoderReal;
 
 public class Pigeon2EncoderImpl implements CTRETimeSynchronizedEncoder {
     private final Pigeon2 pigeon2Instance;
@@ -29,8 +28,8 @@ public class Pigeon2EncoderImpl implements CTRETimeSynchronizedEncoder {
     }
 
     @Override
-    public ThreadedEncoder toThreadedEncoder() {
-        return new ThreadedEncoder(this.getPositionSignal(), this);
+    public TimeStampedEncoderReal toThreadedEncoder() {
+        return new TimeStampedEncoderReal(this.getPositionSignal(), this);
     }
 
     @Override

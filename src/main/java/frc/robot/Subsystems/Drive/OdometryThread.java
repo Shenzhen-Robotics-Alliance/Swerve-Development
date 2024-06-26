@@ -2,7 +2,7 @@ package frc.robot.Subsystems.Drive;
 
 import com.ctre.phoenix6.BaseStatusSignal;
 import frc.robot.Constants;
-import frc.robot.HardwareIO.Helpers.ThreadedEncoder;
+import frc.robot.HardwareIO.Helpers.TimeStampedEncoderReal;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,12 +10,12 @@ import java.util.List;
 public class OdometryThread extends Thread {
     private final boolean waitForTimeSync;
     private final BaseStatusSignal[] odometrySignals;
-    private final List<ThreadedEncoder> odometryEncoders;
-    public OdometryThread(List<ThreadedEncoder> odometryEncoders, boolean waitForTimeSync) {
+    private final List<TimeStampedEncoderReal> odometryEncoders;
+    public OdometryThread(List<TimeStampedEncoderReal> odometryEncoders, boolean waitForTimeSync) {
         this.odometryEncoders = odometryEncoders;
 
         final List<BaseStatusSignal> baseStatusSignals = new ArrayList<>();
-        for (ThreadedEncoder threadedEncoder: odometryEncoders)
+        for (TimeStampedEncoderReal threadedEncoder: odometryEncoders)
             if (threadedEncoder.statusSignal != null)
                 baseStatusSignals.add(threadedEncoder.statusSignal);
         this.odometrySignals = baseStatusSignals.toArray(new BaseStatusSignal[0]);
@@ -46,8 +46,8 @@ public class OdometryThread extends Thread {
                     Thread.sleep((long) (1000 / Constants.ChassisConfigs.ODOMETRY_FREQ));
                 } catch (InterruptedException ignored) {}
             }
-            for (ThreadedEncoder encoder: odometryEncoders)
-                encoder.pollHighFreqPositionReadingFromEncoder();
+            for (TimeStampedEncoderReal encoder: odometryEncoders)
+                encoder.pollPositionReadingToCache();
         }
     }
 }

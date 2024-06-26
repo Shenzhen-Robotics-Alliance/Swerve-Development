@@ -4,7 +4,7 @@ import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.hardware.CANcoder;
 import frc.robot.Constants;
 import frc.robot.HardwareIO.Abstractions.CTRETimeSynchronizedEncoder;
-import frc.robot.HardwareIO.Helpers.ThreadedEncoder;
+import frc.robot.HardwareIO.Helpers.TimeStampedEncoderReal;
 
 public class CanCoderEncoderImpl implements CTRETimeSynchronizedEncoder {
     private final CANcoder canCoderInstance;
@@ -31,9 +31,9 @@ public class CanCoderEncoderImpl implements CTRETimeSynchronizedEncoder {
     }
 
     @Override
-    public ThreadedEncoder toThreadedEncoder() {
+    public TimeStampedEncoderReal toThreadedEncoder() {
         this.positionSignal.setUpdateFrequency(Constants.ChassisConfigs.ODOMETRY_FREQ, 5.0/ Constants.ChassisConfigs.ODOMETRY_FREQ);
-        return new ThreadedEncoder(getPositionSignal(), this);
+        return new TimeStampedEncoderReal(getPositionSignal(), this);
     }
 
     @Override

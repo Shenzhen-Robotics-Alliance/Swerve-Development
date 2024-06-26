@@ -2,6 +2,7 @@ package frc.robot.HardwareIO.Helpers;
 
 import frc.robot.Constants;
 import frc.robot.HardwareIO.Abstractions.RawEncoder;
+import frc.robot.HardwareIO.Abstractions.TimeStampedEncoder;
 import frc.robot.Helpers.ArrayHelpers;
 import frc.robot.Helpers.MathHelpers.AngleHelpers;
 import org.littletonrobotics.junction.Logger;
@@ -9,26 +10,26 @@ import org.littletonrobotics.junction.Logger;
 public class LoggedAbsoluteRotationEncoder implements PeriodicallyUpdatedInputs.PeriodicallyUpdatedInput {
     private final String sensorPath;
     private boolean updateEncoderInMainThread;
-    private final ThreadedEncoder threadedEncoder;
-    private final ThreadedEncoder.ThreadedEncoderInputs inputs;
+    private final TimeStampedEncoder timeStampedEncoder;
+    private final TimeStampedEncoder.TimeStampedEncoderInputs inputs;
 
     private double[] absoluteRotations = new double[] {};
     private double zeroPosition;
 
     public LoggedAbsoluteRotationEncoder(String name) {
-        this(name, null);
+        this(name, new TimeStampedEncoderReplay());
         updateEncoderInMainThread = false;
     }
 
     public LoggedAbsoluteRotationEncoder(String name, RawEncoder rawEncoder) {
-        this(name, new ThreadedEncoder(null, rawEncoder));
+        this(name, new TimeStampedEncoderReal(null, rawEncoder));
         updateEncoderInMainThread = true;
     }
 
-    public LoggedAbsoluteRotationEncoder(String name, ThreadedEncoder threadedEncoder) {
+    public LoggedAbsoluteRotationEncoder(String name, TimeStampedEncoder timeStampedEncoder) {
         this.sensorPath = "AbsoluteRotationEncoders/" + name;
-        this.threadedEncoder = threadedEncoder;
-        this.inputs = new ThreadedEncoder.ThreadedEncoderInputs();
+        this.timeStampedEncoder = timeStampedEncoder;
+        this.inputs = new TimeStampedEncoder.TimeStampedEncoderInputs();
         this.zeroPosition = 0;
         updateEncoderInMainThread = false;
 
@@ -37,8 +38,9 @@ public class LoggedAbsoluteRotationEncoder implements PeriodicallyUpdatedInputs.
 
     @Override
     public void update() {
-        if (updateEncoderInMainThread) this.threadedEncoder.pollHighFreqPositionReadingFromEncoder();
-        if (threadedEncoder != null) this.threadedEncoder.processCachedInputs(inputs);
+        if (updateEncoderInMainThread) this.timeStampedEncoder.pollPositionReadingToCache();
+
+        this.timeStampedEncoder.processInputsUsingCachedReadings(inputs);
         Logger.processInputs(Constants.LogConfigs.SENSORS_INPUTS_PATH + sensorPath, inputs);
 
         processAbsoluteRotations();
