@@ -19,11 +19,15 @@ public class CanCoderEncoderImpl implements CTRETimeSynchronizedEncoder {
     }
 
     @Override
-    public void updateEncoderInputs(RawEncoderInputs inputs) {
+    public double getUncalibratedEncoderPosition() {
         positionSignal.refresh();
+        return positionSignal.getValue();
+    }
+
+    @Override
+    public double getEncoderVelocity() {
         velocitySignal.refresh();
-        inputs.uncalibratedEncoderPosition = positionSignal.getValue();
-        inputs.encoderVelocity = velocitySignal.getValue();
+        return velocitySignal.getValue();
     }
 
     @Override

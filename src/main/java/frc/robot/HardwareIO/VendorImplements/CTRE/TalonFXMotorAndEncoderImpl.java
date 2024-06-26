@@ -33,12 +33,15 @@ public class TalonFXMotorAndEncoderImpl implements RawMotor, CTRETimeSynchronize
     }
 
     @Override
-    public void updateEncoderInputs(RawEncoderInputs inputs) {
+    public double getUncalibratedEncoderPosition() {
         positionSignal.refresh();
-        velocitySignal.refresh();
+        return positionSignal.getValue();
+    }
 
-        inputs.uncalibratedEncoderPosition = positionSignal.getValue();
-        inputs.encoderVelocity = velocitySignal.getValue();
+    @Override
+    public double getEncoderVelocity() {
+        velocitySignal.refresh();
+        return velocitySignal.getValue();
     }
 
     @Override

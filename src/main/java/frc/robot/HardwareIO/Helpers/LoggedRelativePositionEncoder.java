@@ -14,7 +14,7 @@ public class LoggedRelativePositionEncoder implements PeriodicallyUpdatedInputs.
     private double[] relativePositions = new double[] {};
     private double zeroPosition;
     public LoggedRelativePositionEncoder(String name) {
-        this(name, new ThreadedEncoder(null, new RawEncoder() {}));
+        this(name, new ThreadedEncoder(null, null));
     }
 
     public LoggedRelativePositionEncoder(String name, RawEncoder rawEncoder) {
@@ -34,11 +34,13 @@ public class LoggedRelativePositionEncoder implements PeriodicallyUpdatedInputs.
 
     @Override
     public void update() {
-        if (!isEncoderThreaded) threadedEncoder.pollReadingsFromEncoder();
+        if (!isEncoderThreaded) threadedEncoder.pollHighFreqPositionReadingFromEncoder();
+
         threadedEncoder.processCachedInputs(inputs);
+        Logger.processInputs(Constants.LogConfigs.SENSORS_INPUTS_PATH + sensorPath, inputs);
+
         processCachedInputs();
 
-        Logger.processInputs(Constants.LogConfigs.SENSORS_INPUTS_PATH + sensorPath, inputs);
         Logger.recordOutput(Constants.LogConfigs.SENSORS_PROCESSED_INPUTS_PATH + sensorPath + "/zeroPosition", zeroPosition);
         Logger.recordOutput(Constants.LogConfigs.SENSORS_PROCESSED_INPUTS_PATH + sensorPath + "/velocity", getVelocity());
         Logger.recordOutput(Constants.LogConfigs.SENSORS_PROCESSED_INPUTS_PATH + sensorPath + "/latestPosition", getLatestPosition());

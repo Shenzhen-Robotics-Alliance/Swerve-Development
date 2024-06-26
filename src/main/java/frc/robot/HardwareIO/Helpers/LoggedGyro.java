@@ -17,7 +17,7 @@ public class LoggedGyro implements PeriodicallyUpdatedInputs.PeriodicallyUpdated
     private double rawReadingAtZeroPosition;
 
     public LoggedGyro(String name) {
-        this(name, new ThreadedEncoder(null, new RawEncoder() {}));
+        this(name, new ThreadedEncoder(null, null));
     }
 
     public LoggedGyro(String name, RawEncoder rawEncoder) {
@@ -37,11 +37,13 @@ public class LoggedGyro implements PeriodicallyUpdatedInputs.PeriodicallyUpdated
 
     @Override
     public void update() {
-        if (!isEncoderThreaded) this.threadedEncoder.pollReadingsFromEncoder();
+        if (!isEncoderThreaded) this.threadedEncoder.pollHighFreqPositionReadingFromEncoder();
+
         this.threadedEncoder.processCachedInputs(inputs);
+        Logger.processInputs("RawInputs/" + sensorPath, inputs);
+
         processCachedInputs();
 
-        Logger.processInputs("RawInputs/" + sensorPath, inputs);
         Logger.recordOutput(Constants.LogConfigs.SENSORS_PROCESSED_INPUTS_PATH + sensorPath + "/rawReadingAtZeroPosition", rawReadingAtZeroPosition);
         Logger.recordOutput(Constants.LogConfigs.SENSORS_PROCESSED_INPUTS_PATH + sensorPath + "/getAngularVelocity", getAngularVelocity());
         Logger.recordOutput(Constants.LogConfigs.SENSORS_PROCESSED_INPUTS_PATH + sensorPath + "/latestRobotRotation2d", getLatestRobotRotation2d());

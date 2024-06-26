@@ -11,8 +11,12 @@ public class DCEncoderImpl implements RawEncoder {
     }
 
     @Override
-    public void updateEncoderInputs(RawEncoderInputs inputs) {
-        inputs.uncalibratedEncoderPosition = dutyCycleEncoder.getAbsolutePosition();
-        // TODO velocity input with linear velocity
+    public double getUncalibratedEncoderPosition() {
+        return dutyCycleEncoder.getAbsolutePosition();
+    }
+
+    @Override
+    public double getEncoderVelocity() {
+        return 0; // TODO velocity filtering
     }
 }

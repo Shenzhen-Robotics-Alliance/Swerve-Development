@@ -8,7 +8,7 @@ import org.littletonrobotics.junction.Logger;
 
 public class LoggedAbsoluteRotationEncoder implements PeriodicallyUpdatedInputs.PeriodicallyUpdatedInput {
     private final String sensorPath;
-    private boolean isEncoderThreaded;
+    private boolean updateEncoderInMainThread;
     private final ThreadedEncoder threadedEncoder;
     private final ThreadedEncoder.ThreadedEncoderInputs inputs;
 
@@ -16,12 +16,13 @@ public class LoggedAbsoluteRotationEncoder implements PeriodicallyUpdatedInputs.
     private double zeroPosition;
 
     public LoggedAbsoluteRotationEncoder(String name) {
-        this(name, new ThreadedEncoder(null, new RawEncoder() {}));
+        this(name, null);
+        updateEncoderInMainThread = false;
     }
 
     public LoggedAbsoluteRotationEncoder(String name, RawEncoder rawEncoder) {
         this(name, new ThreadedEncoder(null, rawEncoder));
-        isEncoderThreaded = false;
+        updateEncoderInMainThread = true;
     }
 
     public LoggedAbsoluteRotationEncoder(String name, ThreadedEncoder threadedEncoder) {
@@ -29,18 +30,18 @@ public class LoggedAbsoluteRotationEncoder implements PeriodicallyUpdatedInputs.
         this.threadedEncoder = threadedEncoder;
         this.inputs = new ThreadedEncoder.ThreadedEncoderInputs();
         this.zeroPosition = 0;
-        isEncoderThreaded = true;
+        updateEncoderInMainThread = false;
 
         PeriodicallyUpdatedInputs.register(this);
     }
 
     @Override
     public void update() {
-        if (!isEncoderThreaded) this.threadedEncoder.pollReadingsFromEncoder();
-        this.threadedEncoder.processCachedInputs(inputs);
-        processAbsoluteRotations();
-
+        if (updateEncoderInMainThread) this.threadedEncoder.pollHighFreqPositionReadingFromEncoder();
+        if (threadedEncoder != null) this.threadedEncoder.processCachedInputs(inputs);
         Logger.processInputs(Constants.LogConfigs.SENSORS_INPUTS_PATH + sensorPath, inputs);
+
+        processAbsoluteRotations();
         Logger.recordOutput(Constants.LogConfigs.SENSORS_PROCESSED_INPUTS_PATH + sensorPath + "/zeroPosition", zeroPosition);
         Logger.recordOutput(Constants.LogConfigs.SENSORS_PROCESSED_INPUTS_PATH + sensorPath + "/angularVelocity", getAngularVelocity());
         Logger.recordOutput(Constants.LogConfigs.SENSORS_PROCESSED_INPUTS_PATH + sensorPath + "/latestAbsoluteRotationRadian", getLatestAbsoluteRotationRadian());
@@ -68,7 +69,11 @@ public class LoggedAbsoluteRotationEncoder implements PeriodicallyUpdatedInputs.
     }
 
     private double getAbsoluteRotationRadian(double uncalibratedEncoderPosition) {
-        return AngleHelpers.simplifyAngle(AngleHelpers.getActualDifference(zeroPosition, uncalibratedEncoderPosition));
+        return AngleHelpers.simplifyAngle(
+                AngleHelpers.getActualDifference(
+                        zeroPosition,
+                        uncalibratedEncoderPosition * Math.PI * 2)
+        );
     }
 
     public double getAngularVelocity() {

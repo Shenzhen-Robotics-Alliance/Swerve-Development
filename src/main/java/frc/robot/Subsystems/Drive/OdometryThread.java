@@ -47,7 +47,7 @@ public class OdometryThread extends Thread {
                 } catch (InterruptedException ignored) {}
             }
             for (ThreadedEncoder encoder: odometryEncoders)
-                encoder.pollReadingsFromEncoder();
+                encoder.pollHighFreqPositionReadingFromEncoder();
         }
     }
 }

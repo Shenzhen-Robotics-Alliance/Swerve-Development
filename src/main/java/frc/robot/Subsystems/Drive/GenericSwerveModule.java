@@ -6,6 +6,7 @@ import frc.robot.HardwareIO.Helpers.LoggedAbsoluteRotationEncoder;
 import frc.robot.HardwareIO.Helpers.LoggedMotor;
 import frc.robot.HardwareIO.Helpers.LoggedRelativePositionEncoder;
 import frc.robot.HardwareIO.Helpers.ThreadedEncoder;
+import org.littletonrobotics.junction.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +26,7 @@ public class GenericSwerveModule extends SwerveModuleLogic {
 
     @Override
     public SwerveModuleState getActualSwerveModuleState() {
-        return null;
+        return new SwerveModuleState();
     }
 
     @Override
@@ -41,9 +42,9 @@ public class GenericSwerveModule extends SwerveModuleLogic {
     @Override
     public void periodic(double dt) {
         super.periodic(dt);
-        System.out.println("drive encoder position: " + driveEncoder.getLatestPosition());
-        System.out.println("steer encoder rotation (deg): " + Math.toDegrees(steerEncoder.getLatestAbsoluteRotationRadian()));
-        System.out.println("steer encoder rotation (rad): " + steerEncoder.getLatestAbsoluteRotationRadian());
+        Logger.recordOutput("drive encoder position", driveEncoder.getLatestPosition());
+        Logger.recordOutput("steer encoder rotation (deg)", Math.toDegrees(steerEncoder.getLatestAbsoluteRotationRadian()));
+        Logger.recordOutput("steer encoder rotation (rad)", steerEncoder.getLatestAbsoluteRotationRadian());
     }
 
     public List<ThreadedEncoder> getOdometryEncoders() {

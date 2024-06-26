@@ -12,8 +12,12 @@ public class SparkMaxAbsoluteEncoderImpl implements RawEncoder {
     }
 
     @Override
-    public void updateEncoderInputs(RawEncoderInputs inputs) {
-        inputs.uncalibratedEncoderPosition = sparkAbsoluteEncoderInstance.getPosition();
-        inputs.encoderVelocity = sparkAbsoluteEncoderInstance.getVelocity();
+    public double getUncalibratedEncoderPosition() {
+        return sparkAbsoluteEncoderInstance.getPosition();
+    }
+
+    @Override
+    public double getEncoderVelocity() {
+        return sparkAbsoluteEncoderInstance.getVelocity();
     }
 }

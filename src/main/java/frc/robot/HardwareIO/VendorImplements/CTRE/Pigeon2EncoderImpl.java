@@ -18,10 +18,14 @@ public class Pigeon2EncoderImpl implements CTRETimeSynchronizedEncoder {
     }
 
     @Override
-    public void updateEncoderInputs(RawEncoderInputs inputs) {
+    public double getUncalibratedEncoderPosition() {
         yawSignal.refresh();
-        inputs.uncalibratedEncoderPosition = yawSignal.getValue();
-        inputs.encoderVelocity = pigeon2Instance.getRate();
+        return yawSignal.getValue() / (Math.PI * 2);
+    }
+
+    @Override
+    public double getEncoderVelocity() {
+        return pigeon2Instance.getRate() / (Math.PI * 2);
     }
 
     @Override

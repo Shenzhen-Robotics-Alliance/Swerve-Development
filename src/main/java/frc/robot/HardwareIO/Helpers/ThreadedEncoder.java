@@ -17,7 +17,6 @@ import java.util.concurrent.ConcurrentLinkedDeque;
 public class ThreadedEncoder {
     public final BaseStatusSignal statusSignal;
     private final RawEncoder rawEncoder;
-    private final RawEncoder.RawEncoderInputs rawEncoderInputs = new RawEncoder.RawEncoderInputs();
     private final Queue<Double>
             positionQueue = new ConcurrentLinkedDeque<>(),
             timeStampsQueue = new ConcurrentLinkedDeque<>();
@@ -52,11 +51,8 @@ public class ThreadedEncoder {
         }
     }
 
-    public void pollReadingsFromEncoder() {
-        if (rawEncoder == null) return;
-
-        rawEncoder.updateEncoderInputs(rawEncoderInputs);
-        offerWithLengthLimit(rawEncoderInputs.uncalibratedEncoderPosition, positionQueue);
+    public void pollHighFreqPositionReadingFromEncoder() {
+        offerWithLengthLimit(rawEncoder.getUncalibratedEncoderPosition(), positionQueue);
         offerWithLengthLimit(Logger.getRealTimestamp() * 1.0e-6, timeStampsQueue);
     }
 
@@ -68,15 +64,13 @@ public class ThreadedEncoder {
         targetQueue.poll();
     }
 
-    void processCachedInputs(ThreadedEncoderInputs inputs) {
-        if (rawEncoder == null) return;
-
+    public void processCachedInputs(ThreadedEncoderInputs inputs) {
         inputs.uncalibratedEncoderPosition = new ArrayList<>(positionQueue);
         positionQueue.clear();
         inputs.timeStamps = new ArrayList<>(timeStampsQueue);
         timeStampsQueue.clear();
 
-        inputs.encoderVelocity = rawEncoderInputs.encoderVelocity;
+        inputs.encoderVelocity = rawEncoder.getEncoderVelocity();
         if (!inputs.uncalibratedEncoderPosition.isEmpty())
             inputs.latestUncalibratedPosition = inputs.uncalibratedEncoderPosition.get(inputs.uncalibratedEncoderPosition.size()-1);
     }
