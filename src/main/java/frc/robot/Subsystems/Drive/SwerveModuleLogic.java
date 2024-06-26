@@ -3,12 +3,13 @@ package frc.robot.Subsystems.Drive;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import frc.robot.Subsystems.MapleSubsystem;
-import org.littletonrobotics.junction.Logger;
 
 
 public abstract class SwerveModuleLogic extends MapleSubsystem {
-    protected SwerveModuleState setPoint;
     private final String logPath;
+    private SwerveModuleState swerveStateSetPoint;
+    private double desiredDrivingPower, desiredSwerveRotation;
+
 
     public SwerveModuleLogic(String swerveName) {
         super("Swerve Wheel-" + swerveName);
@@ -17,22 +18,22 @@ public abstract class SwerveModuleLogic extends MapleSubsystem {
 
     @Override
     public void onReset() {
-        this.setPoint = new SwerveModuleState();
+        this.swerveStateSetPoint = new SwerveModuleState();
+        this.desiredDrivingPower = 0;
+        this.desiredSwerveRotation = 0;
     }
 
     @Override
     public void periodic(double dt) {
-        Logger.recordOutput(logPath + "/setPoint", setPoint);
-        Logger.recordOutput(logPath + "/actualState", getActualSwerveModuleState());
-        Logger.recordOutput(logPath + "/position", getSwerveModulePosition());
+        // TODO here
     }
 
     public void requestSetPoint(SwerveModuleState setPoint) {
-        this.setPoint = setPoint;
+        this.swerveStateSetPoint = setPoint;
     }
 
-    public SwerveModuleState getSetPoint() {
-        return setPoint;
+    public SwerveModuleState getSwerveStateSetPoint() {
+        return swerveStateSetPoint;
     }
     
     public abstract SwerveModuleState getActualSwerveModuleState();

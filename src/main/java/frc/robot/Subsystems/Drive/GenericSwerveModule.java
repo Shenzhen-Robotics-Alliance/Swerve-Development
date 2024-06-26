@@ -1,10 +1,14 @@
 package frc.robot.Subsystems.Drive;
 
+import com.ctre.phoenix6.BaseStatusSignal;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import frc.robot.HardwareIO.Helpers.LoggedAbsoluteRotationEncoder;
 import frc.robot.HardwareIO.Helpers.LoggedMotor;
 import frc.robot.HardwareIO.Helpers.LoggedRelativePositionEncoder;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class GenericSwerveModule extends SwerveModuleLogic {
     private final LoggedMotor drivingMotor, steeringMotor;
@@ -37,5 +41,9 @@ public class GenericSwerveModule extends SwerveModuleLogic {
     @Override
     public void periodic(double dt) {
         super.periodic(dt);
+    }
+
+    public List<BaseStatusSignal> getOdometrySignals() {
+        return new ArrayList<>();
     }
 }

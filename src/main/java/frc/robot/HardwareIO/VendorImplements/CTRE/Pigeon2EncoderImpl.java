@@ -26,8 +26,7 @@ public class Pigeon2EncoderImpl implements CTRETimeSynchronizedEncoder {
 
     @Override
     public ThreadedEncoder toThreadedEncoder() {
-        this.yawSignal.setUpdateFrequency(Constants.ChassisConfigs.ODOMETER_FREQ, 5.0/ Constants.ChassisConfigs.ODOMETER_FREQ);
-        return new ThreadedEncoder(this);
+        return new ThreadedEncoder(this.getPositionSignal(), this);
     }
 
     @Override

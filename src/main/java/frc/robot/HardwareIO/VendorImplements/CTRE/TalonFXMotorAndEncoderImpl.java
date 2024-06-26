@@ -3,7 +3,6 @@ package frc.robot.HardwareIO.VendorImplements.CTRE;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-import frc.robot.Constants;
 import frc.robot.HardwareIO.Abstractions.CTRETimeSynchronizedEncoder;
 import frc.robot.HardwareIO.Abstractions.RawMotor;
 import frc.robot.HardwareIO.Helpers.ThreadedEncoder;
@@ -44,8 +43,7 @@ public class TalonFXMotorAndEncoderImpl implements RawMotor, CTRETimeSynchronize
 
     @Override
     public ThreadedEncoder toThreadedEncoder() {
-        this.positionSignal.setUpdateFrequency(Constants.ChassisConfigs.ODOMETER_FREQ, 5.0/ Constants.ChassisConfigs.ODOMETER_FREQ);
-        return new ThreadedEncoder(this);
+        return new ThreadedEncoder(this.getPositionSignal(), this);
     }
 
     @Override

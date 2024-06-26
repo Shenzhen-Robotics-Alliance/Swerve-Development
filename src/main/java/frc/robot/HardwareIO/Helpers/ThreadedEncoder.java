@@ -1,5 +1,8 @@
 package frc.robot.HardwareIO.Helpers;
 
+import com.ctre.phoenix6.BaseStatusSignal;
+import edu.wpi.first.wpilibj.DriverStation;
+import frc.robot.Constants;
 import frc.robot.HardwareIO.Abstractions.RawEncoder;
 import frc.robot.Helpers.ArrayHelpers;
 import org.littletonrobotics.junction.LogTable;
@@ -12,17 +15,15 @@ import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
 public class ThreadedEncoder {
+    public final BaseStatusSignal statusSignal;
     private final RawEncoder rawEncoder;
     private final RawEncoder.RawEncoderInputs rawEncoderInputs = new RawEncoder.RawEncoderInputs();
     private final Queue<Double>
             positionQueue = new ConcurrentLinkedDeque<>(),
             timeStampsQueue = new ConcurrentLinkedDeque<>();
 
-    public ThreadedEncoder() {
-        this.rawEncoder = null;
-    }
-
-    public ThreadedEncoder(RawEncoder rawEncoder) {
+    public ThreadedEncoder(BaseStatusSignal statusSignal, RawEncoder rawEncoder) {
+        this.statusSignal = statusSignal;
         this.rawEncoder = rawEncoder;
     }
 
@@ -55,8 +56,16 @@ public class ThreadedEncoder {
         if (rawEncoder == null) return;
 
         rawEncoder.updateEncoderInputs(rawEncoderInputs);
-        positionQueue.add(rawEncoderInputs.uncalibratedEncoderPosition);
-        timeStampsQueue.add(Logger.getRealTimestamp() * 1.0e-6);
+        offerWithLengthLimit(rawEncoderInputs.uncalibratedEncoderPosition, positionQueue);
+        offerWithLengthLimit(Logger.getRealTimestamp() * 1.0e-6, timeStampsQueue);
+    }
+
+    private void offerWithLengthLimit(double d, Queue<Double> targetQueue) {
+        targetQueue.offer(d);
+        if (targetQueue.size() < Constants.ChassisConfigs.ODOMETRY_QUEUE_LENGTH_LIMIT) return;
+
+        DriverStation.reportWarning("Warning: Odometry Queue length limit reached", false);
+        targetQueue.poll();
     }
 
     void processCachedInputs(ThreadedEncoderInputs inputs) {

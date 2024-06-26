@@ -16,11 +16,11 @@ public class LoggedAbsoluteRotationEncoder implements PeriodicallyUpdatedInputs.
     private double zeroPosition;
 
     public LoggedAbsoluteRotationEncoder(String name) {
-        this(name, new ThreadedEncoder(new RawEncoder() {}));
+        this(name, new ThreadedEncoder(null, new RawEncoder() {}));
     }
 
     public LoggedAbsoluteRotationEncoder(String name, RawEncoder rawEncoder) {
-        this(name, new ThreadedEncoder(rawEncoder));
+        this(name, new ThreadedEncoder(null, rawEncoder));
         isEncoderThreaded = false;
     }
 
@@ -36,8 +36,7 @@ public class LoggedAbsoluteRotationEncoder implements PeriodicallyUpdatedInputs.
 
     @Override
     public void update() {
-        if (!isEncoderThreaded)
-            this.threadedEncoder.pollReadingsFromEncoder();
+        if (!isEncoderThreaded) this.threadedEncoder.pollReadingsFromEncoder();
         this.threadedEncoder.processCachedInputs(inputs);
         processAbsoluteRotations();
 

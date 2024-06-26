@@ -17,11 +17,11 @@ public class LoggedGyro implements PeriodicallyUpdatedInputs.PeriodicallyUpdated
     private double rawReadingAtZeroPosition;
 
     public LoggedGyro(String name) {
-        this(name, new ThreadedEncoder(new RawEncoder() {}));
+        this(name, new ThreadedEncoder(null, new RawEncoder() {}));
     }
 
     public LoggedGyro(String name, RawEncoder rawEncoder) {
-        this(name, new ThreadedEncoder(rawEncoder));
+        this(name, new ThreadedEncoder(null, rawEncoder));
         this.isEncoderThreaded = false;
     }
 

@@ -14,11 +14,11 @@ public class LoggedRelativePositionEncoder implements PeriodicallyUpdatedInputs.
     private double[] relativePositions = new double[] {};
     private double zeroPosition;
     public LoggedRelativePositionEncoder(String name) {
-        this(name, new ThreadedEncoder(new RawEncoder() {}));
+        this(name, new ThreadedEncoder(null, new RawEncoder() {}));
     }
 
     public LoggedRelativePositionEncoder(String name, RawEncoder rawEncoder) {
-        this(name, new ThreadedEncoder(rawEncoder));
+        this(name, new ThreadedEncoder(null, rawEncoder));
         this.isEncoderThreaded = false;
     }
 
@@ -34,8 +34,7 @@ public class LoggedRelativePositionEncoder implements PeriodicallyUpdatedInputs.
 
     @Override
     public void update() {
-        if (!isEncoderThreaded)
-            threadedEncoder.pollReadingsFromEncoder();
+        if (!isEncoderThreaded) threadedEncoder.pollReadingsFromEncoder();
         threadedEncoder.processCachedInputs(inputs);
         processCachedInputs();
 

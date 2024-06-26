@@ -28,8 +28,8 @@ public class CanCoderEncoderImpl implements CTRETimeSynchronizedEncoder {
 
     @Override
     public ThreadedEncoder toThreadedEncoder() {
-        this.positionSignal.setUpdateFrequency(Constants.ChassisConfigs.ODOMETER_FREQ, 5.0/ Constants.ChassisConfigs.ODOMETER_FREQ);
-        return new ThreadedEncoder(this);
+        this.positionSignal.setUpdateFrequency(Constants.ChassisConfigs.ODOMETRY_FREQ, 5.0/ Constants.ChassisConfigs.ODOMETRY_FREQ);
+        return new ThreadedEncoder(getPositionSignal(), this);
     }
 
     @Override
