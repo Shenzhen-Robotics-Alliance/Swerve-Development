@@ -29,6 +29,13 @@ public class OdometryThread extends Thread {
     }
 
     @Override
+    public synchronized void start() {
+        /* start the thread if there is at least one odometry signal */
+        if (odometrySignals.length != 0)
+            super.start();
+    }
+
+    @Override
     public void run() {
         while (true) {
             if (waitForTimeSync)

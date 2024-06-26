@@ -1,11 +1,11 @@
 package frc.robot.Subsystems.Drive;
 
-import com.ctre.phoenix6.BaseStatusSignal;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import frc.robot.HardwareIO.Helpers.LoggedAbsoluteRotationEncoder;
 import frc.robot.HardwareIO.Helpers.LoggedMotor;
 import frc.robot.HardwareIO.Helpers.LoggedRelativePositionEncoder;
+import frc.robot.HardwareIO.Helpers.ThreadedEncoder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,9 +41,13 @@ public class GenericSwerveModule extends SwerveModuleLogic {
     @Override
     public void periodic(double dt) {
         super.periodic(dt);
+        System.out.println("drive encoder position: " + driveEncoder.getLatestPosition());
+        System.out.println("steer encoder rotation (deg): " + Math.toDegrees(steerEncoder.getLatestAbsoluteRotationRadian()));
+        System.out.println("steer encoder rotation (rad): " + steerEncoder.getLatestAbsoluteRotationRadian());
     }
 
-    public List<BaseStatusSignal> getOdometrySignals() {
+    public List<ThreadedEncoder> getOdometryEncoders() {
+        /* for a generic odometry, we do not update any encoder in the odometer thread */
         return new ArrayList<>();
     }
 }

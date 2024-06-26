@@ -14,4 +14,9 @@ public final class Constants {
         public static final double ODOMETRY_FREQ = 250;
         public static final int ODOMETRY_QUEUE_LENGTH_LIMIT = 100;
     }
+
+    public static final class SwerveModuleConfigs {
+        public static final double MINIMUM_USAGE_SPEED = 0.12; // meter/second
+        public static final double NON_USAGE_TIME_RESET_SWERVE = 0.5;
+    }
 }
