@@ -43,13 +43,14 @@ public class Robot extends LoggedRobot {
                 String logPath = LogFileUtil.findReplayLog();
                 Logger.setReplaySource(new WPILOGReader(logPath));
                 Logger.addDataReceiver(new WPILOGWriter(LogFileUtil.addPathSuffix(logPath, "_sim")));
+                Logger.addDataReceiver(new NT4Publisher()); // preview the replay process while running
             }
         }
 
         // Start AdvantageKit logger
         Logger.start();
 
-        robotContainer = new RobotContainer();
+        robotContainer = new RobotContainer("5516-2024-OnSeason");
     }
 
     @Override

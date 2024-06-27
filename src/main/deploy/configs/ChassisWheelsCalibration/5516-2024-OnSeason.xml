@@ -1,0 +1,45 @@
+<ChassisWheelsCalibration>
+    <FrontLeft>
+        <drivingMotorID type="int">1</drivingMotorID>
+        <drivingMotorPortOnPDP type="int">1</drivingMotorPortOnPDP>
+        <steeringMotorID type="int">2</steeringMotorID>
+        <steeringMotorPortOnPDP type="int">2</steeringMotorPortOnPDP>
+        <steeringEncoderID type="int">1</steeringEncoderID>
+
+        <steeringMotorTurningDirection type="int">0</steeringMotorTurningDirection> <!-- 0 for clockwise and 1 for counter-clockwise -->
+        <steeringEncoderReadingAtOrigin type="double">0.35</steeringEncoderReadingAtOrigin>
+    </FrontLeft>
+
+    <FrontRight>
+        <drivingMotorID type="int">1</drivingMotorID>
+        <drivingMotorPortOnPDP type="int">1</drivingMotorPortOnPDP>
+        <steeringMotorID type="int">2</steeringMotorID>
+        <steeringMotorPortOnPDP type="int">2</steeringMotorPortOnPDP>
+        <steeringEncoderID type="int">1</steeringEncoderID>
+
+        <steeringMotorTurningDirection type="int">0</steeringMotorTurningDirection> <!-- 0 for clockwise and 1 for counter-clockwise -->
+        <steeringEncoderReadingAtOrigin type="double">0.35</steeringEncoderReadingAtOrigin>
+    </FrontRight>
+
+    <BackLeft>
+        <drivingMotorID type="int">1</drivingMotorID>
+        <drivingMotorPortOnPDP type="int">1</drivingMotorPortOnPDP>
+        <steeringMotorID type="int">2</steeringMotorID>
+        <steeringMotorPortOnPDP type="int">2</steeringMotorPortOnPDP>
+        <steeringEncoderID type="int">1</steeringEncoderID>
+
+        <steeringMotorTurningDirection type="int">0</steeringMotorTurningDirection> <!-- 0 for clockwise and 1 for counter-clockwise -->
+        <steeringEncoderReadingAtOrigin type="double">0.35</steeringEncoderReadingAtOrigin>
+    </BackLeft>
+
+    <BackRight>
+        <drivingMotorID type="int">1</drivingMotorID>
+        <drivingMotorPortOnPDP type="int">1</drivingMotorPortOnPDP>
+        <steeringMotorID type="int">2</steeringMotorID>
+        <steeringMotorPortOnPDP type="int">2</steeringMotorPortOnPDP>
+        <steeringEncoderID type="int">1</steeringEncoderID>
+
+        <steeringMotorTurningDirection type="int">0</steeringMotorTurningDirection> <!-- 0 for clockwise and 1 for counter-clockwise -->
+        <steeringEncoderReadingAtOrigin type="double">0.35</steeringEncoderReadingAtOrigin>
+    </BackRight>
+</ChassisWheelsCalibration>

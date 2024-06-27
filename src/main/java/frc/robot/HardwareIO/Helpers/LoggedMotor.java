@@ -25,7 +25,7 @@ public class LoggedMotor {
         Logger.recordOutput(logPath + "locked", false);
         rawMotor.setOutPut(power);
         Logger.recordOutput(logPath + "requestedPower", power);
-        if (portOnPowerDistributionPanel != -1)
+        if (0 <= portOnPowerDistributionPanel && portOnPowerDistributionPanel <= 15)
             Logger.recordOutput(logPath + "measuredPDPCurrent", RobotContainer.powerDistribution.getCurrent(portOnPowerDistributionPanel));
     }
 
