@@ -6,6 +6,7 @@ import frc.robot.HardwareIO.Helpers.PeriodicallyUpdatedInputs;
 import frc.robot.UnitTests.DigitalSwitchTest;
 import frc.robot.UnitTests.SwerveStateTest;
 import frc.robot.UnitTests.UnitTest;
+import frc.robot.UnitTests.WheelsCalibrationFileReaderTest;
 import org.littletonrobotics.junction.LogFileUtil;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
@@ -19,7 +20,7 @@ public class Robot extends LoggedRobot {
         REPLAY,
         SIMULATION
     }
-    public static final Mode mode = isReal() ? Mode.REAL : Mode.REPLAY;
+    public static final Mode mode = isReal() ? Mode.REAL : Mode.SIMULATION;
     private Command autonomousCommand;
     private RobotContainer robotContainer;
 
@@ -95,7 +96,7 @@ public class Robot extends LoggedRobot {
     public void teleopExit() {
     }
 
-    private final UnitTest unitTest = new SwerveStateTest();
+    private final UnitTest unitTest = new WheelsCalibrationFileReaderTest();
 
     @Override
     public void testInit() {
