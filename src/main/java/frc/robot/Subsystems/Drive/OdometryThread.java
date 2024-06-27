@@ -11,7 +11,7 @@ public class OdometryThread extends Thread {
     private final boolean waitForTimeSync;
     private final BaseStatusSignal[] odometrySignals;
     private final List<TimeStampedEncoderReal> odometryEncoders;
-    public OdometryThread(List<TimeStampedEncoderReal> odometryEncoders, boolean waitForTimeSync) {
+    public OdometryThread(List<TimeStampedEncoderReal> odometryEncoders) {
         this.odometryEncoders = odometryEncoders;
 
         final List<BaseStatusSignal> baseStatusSignals = new ArrayList<>();
@@ -19,11 +19,10 @@ public class OdometryThread extends Thread {
             if (threadedEncoder.statusSignal != null)
                 baseStatusSignals.add(threadedEncoder.statusSignal);
         this.odometrySignals = baseStatusSignals.toArray(new BaseStatusSignal[0]);
+        waitForTimeSync = odometrySignals.length > 0;
 
         for (BaseStatusSignal statusSignal:odometrySignals)
             statusSignal.setUpdateFrequency(Constants.ChassisConfigs.ODOMETRY_FREQ);
-
-        this.waitForTimeSync = waitForTimeSync;
 
         setDaemon(true);
     }

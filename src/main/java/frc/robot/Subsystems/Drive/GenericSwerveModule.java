@@ -30,8 +30,13 @@ public class GenericSwerveModule extends SwerveModuleLogic {
     }
 
     @Override
-    SwerveModulePosition getSwerveModulePosition() {
+    SwerveModulePosition getLatestSwerveModulePosition() {
         return null;
+    }
+
+    @Override
+    SwerveModulePosition[] getCachedSwerveModulePositions() {
+        return new SwerveModulePosition[0];
     }
 
     @Override
