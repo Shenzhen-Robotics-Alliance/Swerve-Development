@@ -7,17 +7,30 @@ import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Node;
 import org.w3c.dom.Element;
+
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MapleConfigFile { // TODO organize the code here and test
+public class MapleConfigFile {
     private final String configType;
     private final String configName;
-    private final Map<String, Map<String, Double>> doubleConfigMap = new HashMap<>();
-    private final Map<String, Map<String, Integer>> intConfigMap = new HashMap<>();
+
+    private static final class ConfigBlock {
+        private final String name;
+        private final Map<String, Double> doubleConfigs = new HashMap<>();
+        private final Map<String, Integer> intConfigs = new HashMap<>();
+
+        private ConfigBlock(String name) {
+            this.name = name;
+        }
+    }
+
+    private final Map<String, ConfigBlock> configBlocks = new HashMap<>();
 
     public MapleConfigFile(String configType, String configName) {
         this.configType = configType;
@@ -25,25 +38,28 @@ public class MapleConfigFile { // TODO organize the code here and test
     }
 
     public double getDoubleConfig(String blockName, String configName) throws NullPointerException {
-        if (!doubleConfigMap.containsKey(blockName) || !doubleConfigMap.get(blockName).containsKey(configName)) {
+        ConfigBlock block = configBlocks.get(blockName);
+        if (block == null || !block.doubleConfigs.containsKey(configName)) {
             throw new NullPointerException("Configuration not found for block: " + blockName + ", config: " + configName + ", type: double");
         }
-        return doubleConfigMap.get(blockName).get(configName);
+        return block.doubleConfigs.get(configName);
     }
 
     public int getIntConfig(String blockName, String configName) throws NullPointerException {
-        if (!intConfigMap.containsKey(blockName) || !intConfigMap.get(blockName).containsKey(configName)) {
+        ConfigBlock block = configBlocks.get(blockName);
+        if (block == null || !block.intConfigs.containsKey(configName)) {
             throw new NullPointerException("Configuration not found for block: " + blockName + ", config: " + configName + ", type: int");
         }
-        return intConfigMap.get(blockName).get(configName);
+        return block.intConfigs.get(configName);
     }
 
     public static MapleConfigFile fromDeployedConfig(String configType, String configName) throws IllegalArgumentException, IOException {
         MapleConfigFile configFile = new MapleConfigFile(configType, configName);
-        String filePath = Filesystem.getDeployDirectory().getPath() + "/configs/" + configType + "/" + configName + ".xml";
-        File xmlFile = new File(filePath);
+
+        final Path xmlFilePath = Paths.get(Filesystem.getDeployDirectory().getPath(), "configs", configType, configName + ".xml");
+        File xmlFile = xmlFilePath.toFile();
         if (!xmlFile.exists()) {
-            throw new IOException("Config file does not exist: " + filePath);
+            throw new IOException("Config file does not exist: " + xmlFilePath);
         }
 
         try {
@@ -57,14 +73,7 @@ public class MapleConfigFile { // TODO organize the code here and test
             }
 
             NodeList blocks = doc.getDocumentElement().getChildNodes();
-            for (int i = 0; i < blocks.getLength(); i++) {
-                Node blockNode = blocks.item(i);
-                if (blockNode.getNodeType() == Node.ELEMENT_NODE) {
-                    Element blockElement = (Element) blockNode;
-                    String blockName = blockElement.getTagName();
-                    readBlockConfig(blockElement, blockName, configFile);
-                }
-            }
+            processBlocks(configFile, blocks);
         } catch (Exception e) {
             throw new IOException("Error reading config file", e);
         }
@@ -72,29 +81,38 @@ public class MapleConfigFile { // TODO organize the code here and test
         return configFile;
     }
 
-    private static void readBlockConfig(Element blockElement, String blockName, MapleConfigFile configFile) {
-        NodeList configNodes = blockElement.getChildNodes();
-        for (int j = 0; j < configNodes.getLength(); j++) {
-            Node configNode = configNodes.item(j);
-            if (configNode.getNodeType() == Node.ELEMENT_NODE) {
-                addConfigToMap((Element) configNode, blockName, configFile);
+    private static void processBlocks(MapleConfigFile configFile, NodeList blocks) {
+        for (int i = 0; i < blocks.getLength(); i++) {
+            Node blockNode = blocks.item(i);
+            if (blockNode.getNodeType() == Node.ELEMENT_NODE) {
+                Element blockElement = (Element) blockNode;
+                String blockName = blockElement.getTagName();
+                ConfigBlock block = new ConfigBlock(blockName);
+                readBlockConfig(blockElement, block);
+                configFile.configBlocks.put(blockName, block);
             }
         }
     }
 
-    private static void addConfigToMap(Element configElement, String blockName, MapleConfigFile configFile) {
+    private static void readBlockConfig(Element blockElement, ConfigBlock block) {
+        NodeList configNodes = blockElement.getChildNodes();
+        for (int j = 0; j < configNodes.getLength(); j++) {
+            Node configNode = configNodes.item(j);
+            if (configNode.getNodeType() == Node.ELEMENT_NODE) {
+                addConfigToBlock((Element) configNode, block);
+            }
+        }
+    }
+
+    private static void addConfigToBlock(Element configElement, ConfigBlock block) {
         String configTag = configElement.getTagName();
         String type = configElement.getAttribute("type");
         String value = configElement.getTextContent();
 
         if (type.equals("double")) {
-            configFile.doubleConfigMap
-                    .computeIfAbsent(blockName, k -> new HashMap<>())
-                    .put(configTag, Double.parseDouble(value));
+            block.doubleConfigs.put(configTag, Double.parseDouble(value));
         } else if (type.equals("int")) {
-            configFile.intConfigMap
-                    .computeIfAbsent(blockName, k -> new HashMap<>())
-                    .put(configTag, Integer.parseInt(value));
+            block.intConfigs.put(configTag, Integer.parseInt(value));
         }
     }
 
@@ -117,21 +135,29 @@ public class MapleConfigFile { // TODO organize the code here and test
         File configFile = new File(configDir, config.configName + ".xml");
         try (FileWriter writer = new FileWriter(configFile)) {
             writer.write("<" + config.configType + ">\n");
-            for (String blockName : config.doubleConfigMap.keySet()) {
-                writer.write("    <" + blockName + ">\n");
-                for (Map.Entry<String, Double> entry : config.doubleConfigMap.get(blockName).entrySet()) {
-                    writer.write("        <" + entry.getKey() + " type=\"double\">" + entry.getValue() + "</" + entry.getKey() + ">\n");
-                }
-                writer.write("    </" + blockName + ">\n");
-            }
-            for (String blockName : config.intConfigMap.keySet()) {
-                writer.write("    <" + blockName + ">\n");
-                for (Map.Entry<String, Integer> entry : config.intConfigMap.get(blockName).entrySet()) {
-                    writer.write("        <" + entry.getKey() + " type=\"int\">" + entry.getValue() + "</" + entry.getKey() + ">\n");
-                }
-                writer.write("    </" + blockName + ">\n");
-            }
+            writeConfigBlocks(config, writer);
             writer.write("</" + config.configType + ">\n");
+        }
+    }
+
+    private static void writeConfigBlocks(MapleConfigFile config, FileWriter writer) throws IOException {
+        for (ConfigBlock block : config.configBlocks.values()) {
+            writer.write("    <" + block.name + ">\n");
+            writeDoubleConfigs(block, writer);
+            writeIntConfigs(block, writer);
+            writer.write("    </" + block.name + ">\n");
+        }
+    }
+
+    private static void writeDoubleConfigs(ConfigBlock block, FileWriter writer) throws IOException {
+        for (Map.Entry<String, Double> entry : block.doubleConfigs.entrySet()) {
+            writer.write("        <" + entry.getKey() + " type=\"double\">" + entry.getValue() + "</" + entry.getKey() + ">\n");
+        }
+    }
+
+    private static void writeIntConfigs(ConfigBlock block, FileWriter writer) throws IOException {
+        for (Map.Entry<String, Integer> entry : block.intConfigs.entrySet()) {
+            writer.write("        <" + entry.getKey() + " type=\"int\">" + entry.getValue() + "</" + entry.getKey() + ">\n");
         }
     }
 }
