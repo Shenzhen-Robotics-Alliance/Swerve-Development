@@ -1,4 +1,18 @@
 <WheelCalibration>
-    <frontLeftMotor type="int">2</frontLeftMotor>
-    <frontLeftSteerZeroPosition type="double">0.6</frontLeftSteerZeroPosition>
+    <frontLeft>
+        <drivingMotorPort type="int">2</drivingMotorPort>
+        <steeringEncoderZeroPosition type="double">0.4</steeringEncoderZeroPosition>
+    </frontLeft>
+    <frontRight>
+        <drivingMotorPort type="int">3</drivingMotorPort>
+        <steeringEncoderZeroPosition type="double">0.6</steeringEncoderZeroPosition>
+    </frontRight>
+    <backLeft>
+        <drivingMotorPort type="int">4</drivingMotorPort>
+        <steeringEncoderZeroPosition type="double">0.8</steeringEncoderZeroPosition>
+    </backLeft>
+    <backRight>
+        <drivingMotorPort type="int">5</drivingMotorPort>
+        <steeringEncoderZeroPosition type="double">0.7</steeringEncoderZeroPosition>
+    </backRight>
 </WheelCalibration>

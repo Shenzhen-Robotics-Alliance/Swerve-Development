@@ -57,9 +57,9 @@ public class WheelsCalibration implements UnitTest {
         else
             drivingMotor.set(0);
 
-        if (xboxController.getAButton())
-            drivingMotor.set(0.1);
+        if (xboxController.getBButton())
+            steeringMotor.set(0.1);
         else
-            drivingMotor.set(0);
+            steeringMotor.set(0);
     }
 }
