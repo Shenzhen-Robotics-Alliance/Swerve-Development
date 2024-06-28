@@ -3,11 +3,7 @@ package frc.robot.Helpers;
 import org.littletonrobotics.junction.Logger;
 
 public class TimeHelpers {
-    public static void sleep(long millis) {
-        sleep(millis / 1000.0);
-    }
-
-    public static void sleep(double seconds) {
+    public static void delay(double seconds) {
         try {
             // Convert seconds to total milliseconds
             long totalMillis = (long) (seconds * 1000);

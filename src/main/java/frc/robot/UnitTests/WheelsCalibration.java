@@ -6,60 +6,100 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
+import frc.robot.Helpers.ConfigHelpers.MapleConfigFile;
+import frc.robot.Helpers.MathHelpers.AngleHelpers;
 
 public class WheelsCalibration implements UnitTest {
     private static final class Wheel {
         public final String name;
-        public final int drivingMotorID, steeringMotorID, encoderID;
+        public final int drivingMotorID, steeringMotorID, encoderID, drivingMotorPortOnPDP, steeringMotorPortOnPDP;
 
         private Wheel(String name, int drivingMotorID, int steeringMotorID, int encoderID) {
+            this(name, drivingMotorID, steeringMotorID, encoderID, -1, -1);
+        }
+
+        private Wheel(String name, int drivingMotorID, int steeringMotorID, int encoderID, int drivingMotorPortOnPDP, int steeringMotorPortOnPDP) {
             this.name = name;
             this.drivingMotorID = drivingMotorID;
             this.steeringMotorID = steeringMotorID;
             this.encoderID = encoderID;
+            this.drivingMotorPortOnPDP = drivingMotorPortOnPDP;
+            this.steeringMotorPortOnPDP = steeringMotorPortOnPDP;
         }
     }
 
-    private static final Wheel
-            frontLeft = new Wheel("FrontLeft", 3, 4, 10),
-            frontRight = new Wheel("FrontRight", 6, 5, 11),
-            backLeft = new Wheel("BackLeft", 1, 2, 9),
-            backRight = new Wheel("BackRight", 8, 7, 12);
-
-    private static final Wheel[] wheels = new Wheel[] {frontLeft, frontRight, backLeft, backRight};
+    private final Wheel[] wheels;
 
     private final XboxController xboxController = new XboxController(0);
 
     private int i;
     private enum SteerWheelTurningDirection {
-        CLOCKWISE,
-        COUNTER_CLOCKWISE
+        NOT_INVERTED,
+        INVERTED
     }
     private final SendableChooser<SteerWheelTurningDirection> wheelTurningDirectionSendableChooser = new SendableChooser<>();
+    private final String configName;
+    private final MapleConfigFile calibrationFile;
+    public WheelsCalibration() {
+        configName = "5516-2024-OnSeason";
+        wheels = new Wheel[] {
+                new Wheel("FrontLeft", 3, 4, 10),
+                new Wheel("FrontRight", 6, 5, 11),
+                new Wheel("BackLeft", 1, 2, 9),
+                new Wheel("BackRight", 8, 7, 12)
+        };
+
+        this.calibrationFile = new MapleConfigFile("ChassisWheelsCalibration", configName);
+    }
+
     @Override
     public void testStart() {
         i = 0;
-        wheelTurningDirectionSendableChooser.setDefaultOption(SteerWheelTurningDirection.CLOCKWISE.name(), SteerWheelTurningDirection.CLOCKWISE);
-        wheelTurningDirectionSendableChooser.addOption(SteerWheelTurningDirection.COUNTER_CLOCKWISE.name(), SteerWheelTurningDirection.COUNTER_CLOCKWISE);
+        wheelTurningDirectionSendableChooser.setDefaultOption(SteerWheelTurningDirection.NOT_INVERTED.name(), SteerWheelTurningDirection.NOT_INVERTED);
+        wheelTurningDirectionSendableChooser.addOption(SteerWheelTurningDirection.INVERTED.name(), SteerWheelTurningDirection.INVERTED);
+        SmartDashboard.putData("Steer Motor Turning Direction (Should be Spinning Counter-Clockwise)", wheelTurningDirectionSendableChooser);
     }
+
+    private boolean wasPressed = false;
     @Override
     public void testPeriodic() {
+        if (i > 3) return;
+
         final Wheel currentWheel = wheels[i];
         final TalonFX
                 drivingMotor = new TalonFX(currentWheel.drivingMotorID, Constants.ChassisConfigs.CHASSIS_CANIVORE_NAME),
                 steeringMotor = new TalonFX(currentWheel.steeringMotorID, Constants.ChassisConfigs.CHASSIS_CANIVORE_NAME);
         final CANcoder canCoder = new CANcoder(currentWheel.steeringMotorID, Constants.ChassisConfigs.CHASSIS_CANIVORE_NAME);
         SmartDashboard.putString("Calibration/CurrentWheel", currentWheel.name);
-        wheelTurningDirectionSendableChooser.getSelected(); // TODO write to config file
+        final boolean steeringMotorInverted = switch (wheelTurningDirectionSendableChooser.getSelected()){
+            case NOT_INVERTED -> false;
+            case INVERTED -> true;
+        };
 
         if (xboxController.getAButton())
-            drivingMotor.set(0.1);
+            drivingMotor.set(0.3);
         else
             drivingMotor.set(0);
 
         if (xboxController.getBButton())
-            steeringMotor.set(0.1);
+            steeringMotor.set(steeringMotorInverted ? -0.2:0.2);
         else
             steeringMotor.set(0);
+
+        if (xboxController.getXButton() && (!wasPressed)) {
+            final MapleConfigFile.ConfigBlock configBlock = calibrationFile.getBlock(currentWheel.name);
+            configBlock.putIntConfig("drivingMotorID", currentWheel.drivingMotorID);
+            configBlock.putIntConfig("drivingMotorPortOnPDP", currentWheel.drivingMotorPortOnPDP);
+            configBlock.putIntConfig("steeringMotorID", currentWheel.steeringMotorID);
+            configBlock.putIntConfig("steeringMotorPortOnPDP", currentWheel.steeringMotorPortOnPDP);
+            configBlock.putIntConfig("steeringEncoderID", currentWheel.encoderID);
+
+            configBlock.putIntConfig("steeringMotorInverted", steeringMotorInverted ? 1 : 0);
+            configBlock.putDoubleConfig("steeringEncoderReadingAtOrigin", AngleHelpers.simplifyAngle(canCoder.getAbsolutePosition().getValue() * Math.PI * 2));
+            i++;
+            if (i > 3)
+                calibrationFile.saveConfigToUSBSafe();
+        }
+        wasPressed = xboxController.getXButton();
     }
 }

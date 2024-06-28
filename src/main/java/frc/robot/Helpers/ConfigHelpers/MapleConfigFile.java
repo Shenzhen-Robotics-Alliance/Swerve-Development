@@ -20,13 +20,41 @@ public class MapleConfigFile {
     private final String configType;
     private final String configName;
 
-    private static final class ConfigBlock {
-        private final String name;
+    public static final class ConfigBlock {
+        private final String blockName;
         private final Map<String, Double> doubleConfigs = new HashMap<>();
         private final Map<String, Integer> intConfigs = new HashMap<>();
 
-        private ConfigBlock(String name) {
-            this.name = name;
+        private ConfigBlock(String blockName) {
+            this.blockName = blockName;
+        }
+
+        public double getDoubleConfig(String name) throws NullPointerException {
+            if (!doubleConfigs.containsKey(name))
+                throw new NullPointerException("Configuration not found for block: " + name + ", config: " + name + ", type: double");
+            return doubleConfigs.get(name);
+        }
+
+        public int getIntConfig(String name) throws NullPointerException {
+            if (!intConfigs.containsKey(name))
+                throw new NullPointerException("Configuration not found for block: " + name + ", config: " + name + ", type: int");
+            return intConfigs.get(name);
+        }
+
+        public void putDoubleConfig(String configName, double value) throws IllegalArgumentException {
+            if (intConfigs.containsKey(configName))
+                throw new IllegalArgumentException(
+                        "Cannot put double config '" + configName +  "' to block '" + blockName + "' since there is already an int config with the same name"
+                );
+            doubleConfigs.put(configName, value);
+        }
+
+        public void putIntConfig(String configName, int value) throws IllegalArgumentException {
+            if (doubleConfigs.containsKey(configName))
+                throw new IllegalArgumentException(
+                        "Cannot put int config '" + configName +  "' to block '" + blockName + "' since there is already a double config with the same name"
+                );
+            intConfigs.put(configName, value);
         }
     }
 
@@ -37,20 +65,10 @@ public class MapleConfigFile {
         this.configName = configName;
     }
 
-    public double getDoubleConfig(String blockName, String configName) throws NullPointerException {
-        ConfigBlock block = configBlocks.get(blockName);
-        if (block == null || !block.doubleConfigs.containsKey(configName)) {
-            throw new NullPointerException("Configuration not found for block: " + blockName + ", config: " + configName + ", type: double");
-        }
-        return block.doubleConfigs.get(configName);
-    }
-
-    public int getIntConfig(String blockName, String configName) throws NullPointerException {
-        ConfigBlock block = configBlocks.get(blockName);
-        if (block == null || !block.intConfigs.containsKey(configName)) {
-            throw new NullPointerException("Configuration not found for block: " + blockName + ", config: " + configName + ", type: int");
-        }
-        return block.intConfigs.get(configName);
+    public ConfigBlock getBlock(String blockName) {
+        if (!configBlocks.containsKey(blockName))
+            configBlocks.put(blockName, new ConfigBlock(blockName));
+        return configBlocks.get(blockName);
     }
 
     public static MapleConfigFile fromDeployedConfig(String configType, String configName) throws IllegalArgumentException, IOException {
@@ -116,36 +134,37 @@ public class MapleConfigFile {
         }
     }
 
-    public static void saveConfigToUSBSafe(MapleConfigFile config) {
+    public void saveConfigToUSBSafe() {
         try {
-            saveConfigToUSB(config);
+            saveConfigToUSB();
         } catch (IOException ignored) {
+            ignored.printStackTrace();
         }
     }
 
-    public static void saveConfigToUSB(MapleConfigFile config) throws IOException {
+    public void saveConfigToUSB() throws IOException {
         File usbDir = new File("/media/sda1");
         if (!usbDir.exists()) {
             throw new IOException("No USB connected");
         }
-        File configDir = new File(usbDir, "savedConfigs/" + config.configType);
+        File configDir = new File(usbDir, "savedConfigs/" + this.configType);
         if (!configDir.exists() && !configDir.mkdirs()) {
             throw new IOException("Failed to create config directory on USB");
         }
-        File configFile = new File(configDir, config.configName + ".xml");
+        File configFile = new File(configDir, this.configName + ".xml");
         try (FileWriter writer = new FileWriter(configFile)) {
-            writer.write("<" + config.configType + ">\n");
-            writeConfigBlocks(config, writer);
-            writer.write("</" + config.configType + ">\n");
+            writer.write("<" + this.configType + ">\n");
+            writeConfigBlocks(this, writer);
+            writer.write("</" + this.configType + ">\n");
         }
     }
 
     private static void writeConfigBlocks(MapleConfigFile config, FileWriter writer) throws IOException {
         for (ConfigBlock block : config.configBlocks.values()) {
-            writer.write("    <" + block.name + ">\n");
+            writer.write("    <" + block.blockName + ">\n");
             writeDoubleConfigs(block, writer);
             writeIntConfigs(block, writer);
-            writer.write("    </" + block.name + ">\n");
+            writer.write("    </" + block.blockName + ">\n");
         }
     }
 

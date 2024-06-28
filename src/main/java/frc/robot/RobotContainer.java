@@ -35,20 +35,21 @@ public class RobotContainer {
     }
 
     private static GenericSwerveModule createSwerveModuleCTRE(String moduleName, MapleConfigFile calibrationFile) {
-        final TalonFX drivingTalonFX = new TalonFX(calibrationFile.getIntConfig(moduleName, "drivingMotorID"), Constants.ChassisConfigs.CHASSIS_CANIVORE_NAME),
-                steeringTalonFX = new TalonFX(calibrationFile.getIntConfig(moduleName, "steeringMotorID"), Constants.ChassisConfigs.CHASSIS_CANIVORE_NAME);
-        final CANcoder steeringCANcoder = new CANcoder(calibrationFile.getIntConfig(moduleName, "steeringEncoderID"), Constants.ChassisConfigs.CHASSIS_CANIVORE_NAME);
+        final MapleConfigFile.ConfigBlock configBlock = calibrationFile.getBlock(moduleName);
+        final TalonFX drivingTalonFX = new TalonFX(configBlock.getIntConfig("drivingMotorID"), Constants.ChassisConfigs.CHASSIS_CANIVORE_NAME),
+                steeringTalonFX = new TalonFX(configBlock.getIntConfig("steeringMotorID"), Constants.ChassisConfigs.CHASSIS_CANIVORE_NAME);
+        final CANcoder steeringCANcoder = new CANcoder(configBlock.getIntConfig("steeringEncoderID"), Constants.ChassisConfigs.CHASSIS_CANIVORE_NAME);
 
         final LoggedMotor
-                drivingMotor = HardwareFactory.createMotor(moduleName + "DrivingMotor", drivingTalonFX, false, calibrationFile.getIntConfig(moduleName, "drivingMotorPortOnPDP")),
+                drivingMotor = HardwareFactory.createMotor(moduleName + "DrivingMotor", drivingTalonFX, false, configBlock.getIntConfig("drivingMotorPortOnPDP")),
                 steeringMotor = HardwareFactory.createMotor(
                         moduleName + "SteeringMotor", steeringTalonFX,
-                        calibrationFile.getIntConfig(moduleName, "steeringMotorTurningDirection") == 0,
-                        calibrationFile.getIntConfig(moduleName, "steeringMotorPortOnPDP")
+                        configBlock.getDoubleConfig("steeringMotorTurningDirection") == 0,
+                        configBlock.getIntConfig("steeringMotorPortOnPDP")
                 );
         final LoggedRelativePositionEncoder drivingEncoder = HardwareFactory.createRelativePositionEncoder(moduleName + "DrivingEncoder", drivingTalonFX, false);
         final LoggedAbsoluteRotationEncoder steeringEncoder = HardwareFactory.createAbsoluteRotationEncoder("FrontLeftSteeringEncoder", steeringCANcoder);
-        steeringEncoder.setZeroPosition(calibrationFile.getDoubleConfig(moduleName, "steeringEncoderReadingAtOrigin"));
+        steeringEncoder.setZeroPosition(configBlock.getDoubleConfig("steeringEncoderReadingAtOrigin"));
         return new GenericSwerveModule(moduleName, drivingMotor, steeringMotor, drivingEncoder, steeringEncoder);
     }
 
