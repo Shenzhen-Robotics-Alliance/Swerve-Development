@@ -9,6 +9,7 @@ import frc.robot.HardwareIO.Helpers.TimeStampedEncoderReal;
 public class CanCoderEncoderImpl implements CTRETimeSynchronizedEncoder {
     private final CANcoder canCoderInstance;
     private final StatusSignal<Double> positionSignal, velocitySignal;
+    private boolean isThreadedEncoder = false;
 
     public CanCoderEncoderImpl(CANcoder canCoderInstance) {
         this.canCoderInstance = canCoderInstance;
@@ -20,7 +21,8 @@ public class CanCoderEncoderImpl implements CTRETimeSynchronizedEncoder {
 
     @Override
     public double getUncalibratedEncoderPosition() {
-        positionSignal.refresh();
+        if (!isThreadedEncoder)
+            positionSignal.refresh();
         return positionSignal.getValue();
     }
 
@@ -33,6 +35,7 @@ public class CanCoderEncoderImpl implements CTRETimeSynchronizedEncoder {
     @Override
     public TimeStampedEncoderReal toThreadedEncoder() {
         this.positionSignal.setUpdateFrequency(Constants.ChassisConfigs.ODOMETRY_FREQ, 5.0/ Constants.ChassisConfigs.ODOMETRY_FREQ);
+        this.isThreadedEncoder = true;
         return new TimeStampedEncoderReal(getPositionSignal(), this);
     }
 

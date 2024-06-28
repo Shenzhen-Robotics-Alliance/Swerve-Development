@@ -29,7 +29,7 @@ public class TimeStampedEncoderReal implements TimeStampedEncoder {
         offerWithLengthLimit(Logger.getRealTimestamp() * 1.0e-6, timeStampsCache);
     }
 
-    private void offerWithLengthLimit(double d, Queue<Double> targetQueue) {
+    public static void offerWithLengthLimit(double d, Queue<Double> targetQueue) {
         targetQueue.offer(d);
         if (targetQueue.size() < Constants.ChassisConfigs.ODOMETRY_QUEUE_LENGTH_LIMIT) return;
 

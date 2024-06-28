@@ -9,9 +9,9 @@ import java.util.List;
 
 public abstract class HolomonicChassisLogic extends MapleSubsystem {
     private final OdometryThread odometryThread;
-    protected HolomonicChassisLogic(List<TimeStampedEncoderReal> odometryEncoders) {
+    protected HolomonicChassisLogic(List<TimeStampedEncoderReal> odometryEncoders, boolean waitForOdometryTimeSync) {
         super("Chassis");
-        this.odometryThread = new OdometryThread(odometryEncoders);
+        this.odometryThread = new OdometryThread(odometryEncoders, waitForOdometryTimeSync);
         this.odometryThread.start();
     }
 
