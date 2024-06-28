@@ -16,11 +16,14 @@ import frc.robot.Subsystems.Drive.GenericSwerveModule;
 import java.io.IOException;
 
 public class RobotContainer {
-    public static PowerDistribution powerDistribution = new PowerDistribution();
+    public static PowerDistribution powerDistribution;
     private final GenericSwerveModule testSwerveImplement;
     public RobotContainer(String chassisName) {
-        powerDistribution = new PowerDistribution(0, PowerDistribution.ModuleType.kCTRE);
-        // powerDistribution = new PowerDistribution(1, PowerDistribution.ModuleType.kRev);
+        if (Robot.mode == Robot.Mode.REAL)
+            powerDistribution = new PowerDistribution(0, PowerDistribution.ModuleType.kCTRE);
+            // powerDistribution = new PowerDistribution(1, PowerDistribution.ModuleType.kRev);
+        else
+            powerDistribution = new PowerDistribution();
         SmartDashboard.putData("PDP", powerDistribution);
 
         final MapleConfigFile chassisWheelsCalibrationFile;
@@ -44,12 +47,13 @@ public class RobotContainer {
                 drivingMotor = HardwareFactory.createMotor(moduleName + "DrivingMotor", drivingTalonFX, false, configBlock.getIntConfig("drivingMotorPortOnPDP")),
                 steeringMotor = HardwareFactory.createMotor(
                         moduleName + "SteeringMotor", steeringTalonFX,
-                        configBlock.getDoubleConfig("steeringMotorTurningDirection") == 0,
+                        configBlock.getIntConfig("steeringMotorInverted") != 0,
                         configBlock.getIntConfig("steeringMotorPortOnPDP")
                 );
         final LoggedRelativePositionEncoder drivingEncoder = HardwareFactory.createRelativePositionEncoder(moduleName + "DrivingEncoder", drivingTalonFX, false);
         final LoggedAbsoluteRotationEncoder steeringEncoder = HardwareFactory.createAbsoluteRotationEncoder("FrontLeftSteeringEncoder", steeringCANcoder);
         steeringEncoder.setZeroPosition(configBlock.getDoubleConfig("steeringEncoderReadingAtOrigin"));
+
         return new GenericSwerveModule(moduleName, drivingMotor, steeringMotor, drivingEncoder, steeringEncoder);
     }
 
