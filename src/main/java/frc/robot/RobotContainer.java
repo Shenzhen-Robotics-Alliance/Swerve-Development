@@ -1,5 +1,7 @@
 package frc.robot;
 
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.wpilibj.PowerDistribution;
@@ -42,6 +44,18 @@ public class RobotContainer {
         final TalonFX drivingTalonFX = new TalonFX(configBlock.getIntConfig("drivingMotorID"), Constants.ChassisConfigs.CHASSIS_CANIVORE_NAME),
                 steeringTalonFX = new TalonFX(configBlock.getIntConfig("steeringMotorID"), Constants.ChassisConfigs.CHASSIS_CANIVORE_NAME);
         final CANcoder steeringCANcoder = new CANcoder(configBlock.getIntConfig("steeringEncoderID"), Constants.ChassisConfigs.CHASSIS_CANIVORE_NAME);
+
+        final TalonFXConfiguration driveMotorConfig = new TalonFXConfiguration();
+        driveMotorConfig.CurrentLimits.SupplyCurrentLimit = Constants.SwerveModuleConfigs.DRIVING_CURRENT_LIMIT;
+        driveMotorConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
+        drivingTalonFX.getConfigurator().apply(driveMotorConfig, 500);
+
+        final TalonFXConfiguration steerMotorConfig = new TalonFXConfiguration();
+        steerMotorConfig.CurrentLimits.SupplyCurrentLimit = Constants.SwerveModuleConfigs.STEERING_CURRENT_LIMIT;
+        steerMotorConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
+        steeringTalonFX.getConfigurator().apply(steerMotorConfig, 500);
+
+        // TODO: network tables alarm if configuration not successful
 
         final LoggedMotor
                 drivingMotor = HardwareFactory.createMotor(moduleName + "DrivingMotor", drivingTalonFX, false, configBlock.getIntConfig("drivingMotorPortOnPDP")),

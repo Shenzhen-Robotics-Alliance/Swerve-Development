@@ -1,8 +1,0 @@
-<MyConfigType>
-    <block1>
-        <intConfig1 type="int">2</intConfig1>
-    </block1>
-    <block2>
-        <doubleConfig1 type="double">0.4</doubleConfig1>
-    </block2>
-</MyConfigType>
