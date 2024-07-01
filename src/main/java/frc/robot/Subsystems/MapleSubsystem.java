@@ -32,6 +32,8 @@ public abstract class MapleSubsystem extends SubsystemBase {
             enableSubsystems();
         else if (DriverStation.isDisabled() && (wasEnabled))
             disableSubsystems();
+
+        wasEnabled = DriverStation.isEnabled();
     }
     private static void enableSubsystems() {
         for (MapleSubsystem instance:instances)
