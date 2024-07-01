@@ -5,7 +5,7 @@ import frc.robot.RobotContainer;
 import org.littletonrobotics.junction.Logger;
 
 public class LoggedMotor {
-    private final RawMotor rawMotor;
+    public final RawMotor rawMotor;
     private final String logPath;
     private final int portOnPowerDistributionPanel;
 
@@ -32,7 +32,7 @@ public class LoggedMotor {
     public void relax() {
         Logger.recordOutput(logPath + "relaxed", true);
         Logger.recordOutput(logPath + "locked", false);
-        rawMotor.configureZeroPowerBehavior(RawMotor.ZeroPowerBehavior.COAST);
+        rawMotor.configureZeroPowerBehavior(RawMotor.ZeroPowerBehavior.RELAX);
         rawMotor.setOutPut(0);
     }
 

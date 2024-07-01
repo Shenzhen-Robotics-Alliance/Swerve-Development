@@ -28,7 +28,7 @@ public class TalonFXMotorAndEncoderImpl implements RawMotor, CTRETimeSynchronize
     public void configureZeroPowerBehavior(ZeroPowerBehavior zeroPowerBehavior) {
         talonFXInstance.setNeutralMode(switch (zeroPowerBehavior){
             case BREAK -> NeutralModeValue.Brake;
-            case COAST -> NeutralModeValue.Coast;
+            case RELAX -> NeutralModeValue.Coast;
         });
     }
 

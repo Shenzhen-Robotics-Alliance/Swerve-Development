@@ -21,7 +21,7 @@ public class CanSparkMaxMotorImpl implements RawMotor {
     public void configureZeroPowerBehavior(ZeroPowerBehavior zeroPowerBehavior) {
         canSparkMax.setIdleMode(switch (zeroPowerBehavior){
             case BREAK -> CANSparkBase.IdleMode.kBrake;
-            case COAST -> CANSparkBase.IdleMode.kCoast;
+            case RELAX -> CANSparkBase.IdleMode.kCoast;
         });
     }
 }

@@ -14,7 +14,7 @@ public interface RawMotor {
         /** the motor generates a force that stops the rotter */
         BREAK,
         /** the motor allows the rotter to spin freely */
-        COAST
+        RELAX
     }
     /**
      * sets the zero power behavior of the motion (if adjustable)

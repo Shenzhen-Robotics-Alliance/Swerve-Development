@@ -3,6 +3,7 @@ package frc.robot.Subsystems.Drive;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import frc.robot.Constants;
+import frc.robot.HardwareIO.Abstractions.RawMotor;
 import frc.robot.HardwareIO.Helpers.LoggedAbsoluteRotationEncoder;
 import frc.robot.HardwareIO.Helpers.LoggedMotor;
 import frc.robot.HardwareIO.Helpers.LoggedRelativePositionEncoder;
@@ -62,6 +63,18 @@ public class GenericSwerveModule extends SwerveModule {
         Logger.recordOutput("drive encoder position", driveEncoder.getLatestPosition());
         Logger.recordOutput("steer encoder rotation (deg)", Math.toDegrees(steerEncoder.getLatestAbsoluteRotationRadian()));
         Logger.recordOutput("steer encoder rotation (rad)", steerEncoder.getLatestAbsoluteRotationRadian());
+    }
+
+    @Override
+    public void onEnable() {
+        steeringMotor.rawMotor.configureZeroPowerBehavior(RawMotor.ZeroPowerBehavior.BREAK);
+        drivingMotor.rawMotor.configureZeroPowerBehavior(RawMotor.ZeroPowerBehavior.BREAK);
+    }
+
+    @Override
+    public void onDisable() {
+        steeringMotor.rawMotor.configureZeroPowerBehavior(RawMotor.ZeroPowerBehavior.RELAX);
+        drivingMotor.rawMotor.configureZeroPowerBehavior(RawMotor.ZeroPowerBehavior.RELAX);
     }
 
     public List<TimeStampedEncoderReal> getOdometryEncoders() {

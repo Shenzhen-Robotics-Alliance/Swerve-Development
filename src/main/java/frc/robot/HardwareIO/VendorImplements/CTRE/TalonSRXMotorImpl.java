@@ -22,7 +22,7 @@ public class TalonSRXMotorImpl implements RawMotor {
     public void configureZeroPowerBehavior(ZeroPowerBehavior zeroPowerBehavior) {
         this.talonSRX.setNeutralMode(switch (zeroPowerBehavior){
             case BREAK -> NeutralMode.Brake;
-            case COAST -> NeutralMode.Coast;
+            case RELAX -> NeutralMode.Coast;
         });
     }
 }

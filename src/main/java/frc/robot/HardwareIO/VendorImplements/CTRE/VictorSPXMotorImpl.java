@@ -22,7 +22,7 @@ public class VictorSPXMotorImpl implements RawMotor {
     public void configureZeroPowerBehavior(ZeroPowerBehavior zeroPowerBehavior) {
         victorSPXInstance.setNeutralMode(switch (zeroPowerBehavior){
             case BREAK -> NeutralMode.Brake;
-            case COAST -> NeutralMode.Coast;
+            case RELAX -> NeutralMode.Coast;
         });
     }
 }

@@ -1,5 +1,6 @@
 package frc.robot.Subsystems;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Robot;
@@ -18,14 +19,32 @@ public abstract class MapleSubsystem extends SubsystemBase {
         instances.remove(instance);
     }
 
-    public static void robotInit() {
+    public static void subsystemsInit() {
         for (MapleSubsystem instance:instances)
             instance.onReset();
     }
-    public static void robotEnable() {
+
+    private static boolean wasEnabled = false;
+    public static void subsystemsPeriodic() {
+        // periodic() is called from CommandScheduler, we only need to check for enable/disable
+
+        if (DriverStation.isEnabled() && (!wasEnabled))
+            enableSubsystems();
+        else if (DriverStation.isDisabled() && (wasEnabled))
+            disableSubsystems();
+    }
+    private static void enableSubsystems() {
+        for (MapleSubsystem instance:instances)
+            if (!instance.updateDuringDisabled) {
+                instance.onReset();
+                instance.onEnable();
+            }
+    }
+
+    private static void disableSubsystems() {
         for (MapleSubsystem instance:instances)
             if (!instance.updateDuringDisabled)
-                instance.onReset();
+                instance.onDisable();
     }
 
     private final boolean updateDuringDisabled;
@@ -37,6 +56,9 @@ public abstract class MapleSubsystem extends SubsystemBase {
         this.updateDuringDisabled = updateDuringDisabled;
         register(this);
     }
+
+    public void onEnable() {}
+    public void onDisable() {}
     public abstract void onReset();
     public abstract void periodic(double dt);
 
