@@ -9,27 +9,27 @@ import frc.robot.Helpers.MathHelpers.LookUpTable;
  * */
 public class MapleSimplePIDController implements SingleDimensionMechanismController {
     /** the profile of the mechanism being controlled */
-    private final EasyPIDProfile easyPIDProfile;
+    private final SimplePIDProfile profile;
 
     private double desiredPosition;
     /**
      * initializes an easy pid controller with a given profile
      * */
-    public MapleSimplePIDController(EasyPIDProfile easyPIDProfile, double startingPosition) {
-        this.easyPIDProfile = easyPIDProfile;
+    public MapleSimplePIDController(SimplePIDProfile profile, double startingPosition) {
+        this.profile = profile;
         desiredPosition = startingPosition;
     }
 
     @Override
     public double getMotorPower(double mechanismVelocity, double mechanismPosition) {
         final double
-                mechanismPositionWithFeedForward = mechanismPosition + mechanismVelocity * easyPIDProfile.mechanismDecelerationTime,
-                error = easyPIDProfile.isMechanismInCycle ?
+                mechanismPositionWithFeedForward = mechanismPosition + mechanismVelocity * profile.mechanismDecelerationTime,
+                error = profile.isMechanismInCycle ?
                         AngleHelpers.getActualDifference(mechanismPositionWithFeedForward, desiredPosition)
                         : desiredPosition - mechanismPositionWithFeedForward;
-        if (Math.abs(error) < easyPIDProfile.errorTolerance)
+        if (Math.abs(error) < profile.errorTolerance)
             return 0;
-        final double power = LookUpTable.linearInterpretationWithBounding(easyPIDProfile.errorTolerance, easyPIDProfile.minimumPower, easyPIDProfile.errorStartDecelerate, easyPIDProfile.maximumPower, Math.abs(error));
+        final double power = LookUpTable.linearInterpretationWithBounding(profile.errorTolerance, profile.minimumPower, profile.errorStartDecelerate, profile.maximumPower, Math.abs(error));
         return Math.copySign(power, error);
     }
 
@@ -37,10 +37,10 @@ public class MapleSimplePIDController implements SingleDimensionMechanismControl
         this.desiredPosition = desiredPosition;
     }
 
-    public static final class EasyPIDProfile {
+    public static final class SimplePIDProfile {
         private final double maximumPower, errorStartDecelerate, minimumPower, errorTolerance, mechanismDecelerationTime;
         private final boolean isMechanismInCycle;
-        public EasyPIDProfile(double maximumPower, double errorStartDecelerate, double minimumPower, double errorTolerance, double mechanismDecelerationTime, boolean isMechanismInCycle) {
+        public SimplePIDProfile(double maximumPower, double errorStartDecelerate, double minimumPower, double errorTolerance, double mechanismDecelerationTime, boolean isMechanismInCycle) {
             this.maximumPower = maximumPower;
             this.errorStartDecelerate = errorStartDecelerate;
             this.minimumPower = minimumPower;

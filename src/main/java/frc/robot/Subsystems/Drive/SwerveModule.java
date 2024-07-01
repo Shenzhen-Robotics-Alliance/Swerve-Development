@@ -8,13 +8,13 @@ import frc.robot.Helpers.TimeHelpers;
 import frc.robot.Subsystems.MapleSubsystem;
 
 
-public abstract class SwerveModuleLogic extends MapleSubsystem {
+public abstract class SwerveModule extends MapleSubsystem {
     private final String logPath;
     private SwerveModuleState swerveStateSetPoint;
-    private double driveSpeed, swerveHeadingSetPoint;
+    protected double calculatedDriveSpeedSetPoint, calculatedWheelHeadingSetPoint;
 
 
-    public SwerveModuleLogic(String swerveName) {
+    public SwerveModule(String swerveName) {
         super("Swerve Wheel-" + swerveName);
         this.logPath = "Chassis/ModuleStates/" + swerveName;
     }
@@ -22,8 +22,8 @@ public abstract class SwerveModuleLogic extends MapleSubsystem {
     @Override
     public void onReset() {
         this.swerveStateSetPoint = new SwerveModuleState();
-        this.driveSpeed = 0;
-        this.swerveHeadingSetPoint = 0;
+        this.calculatedDriveSpeedSetPoint = 0;
+        this.calculatedWheelHeadingSetPoint = 0;
     }
 
     double previousMovementTime = 0;
@@ -34,8 +34,12 @@ public abstract class SwerveModuleLogic extends MapleSubsystem {
                 desiredDriveSpeed = currentState.speedMetersPerSecond,
                 currentSwerveHeading = getActualSwerveModuleState().angle.getRadians();
 
-        if (desiredDriveSpeed > Constants.SwerveModuleConfigs.MINIMUM_USAGE_SPEED)
+        if (desiredDriveSpeed > Constants.SwerveModuleConfigs.MINIMUM_USAGE_SPEED_METERS_PER_SECOND) {
+            final double swerveSpeedProjectionFactorToCurrentSwerveHeading = Math.cos(AngleHelpers.getActualDifference(currentSwerveHeading, rawSwerveSpeedHeading));
+            this.calculatedDriveSpeedSetPoint = desiredDriveSpeed * swerveSpeedProjectionFactorToCurrentSwerveHeading;
             previousMovementTime = TimeHelpers.getTime();
+        } else
+            this.calculatedDriveSpeedSetPoint = 0;
         final double rawSwerveHeadingSetPoint =
                 TimeHelpers.getTime() - previousMovementTime > Constants.SwerveModuleConfigs.NON_USAGE_TIME_RESET_SWERVE ?
                         0:rawSwerveSpeedHeading,
@@ -43,9 +47,9 @@ public abstract class SwerveModuleLogic extends MapleSubsystem {
                 differenceToReversedSetPoint = AngleHelpers.getActualDifference(currentSwerveHeading, rawSwerveHeadingSetPoint + Math.PI);
 
         if (Math.abs(differenceToReversedSetPoint) - Math.abs(differenceToRawSetPoint) > Math.toRadians(10))
-            this.swerveHeadingSetPoint = AngleHelpers.simplifyAngle(rawSwerveHeadingSetPoint + Math.PI);
+            this.calculatedWheelHeadingSetPoint = AngleHelpers.simplifyAngle(rawSwerveHeadingSetPoint + Math.PI);
         else
-            this.swerveHeadingSetPoint = rawSwerveHeadingSetPoint;
+            this.calculatedWheelHeadingSetPoint = rawSwerveHeadingSetPoint;
     }
 
     public void requestSetPoint(SwerveModuleState setPoint) {

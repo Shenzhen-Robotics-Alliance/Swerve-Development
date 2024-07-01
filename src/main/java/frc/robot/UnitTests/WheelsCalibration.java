@@ -60,7 +60,7 @@ public class WheelsCalibration implements UnitTest {
         SmartDashboard.putData("Steer Motor Turning Direction (Should be Spinning Counter-Clockwise)", wheelTurningDirectionSendableChooser);
     }
 
-    private boolean wasPressed = false;
+    private boolean wasPressed = false, steeringMotorInverted = false;
     @Override
     public void testPeriodic() {
         if (i > 3) return;
@@ -71,7 +71,7 @@ public class WheelsCalibration implements UnitTest {
                 steeringMotor = new TalonFX(currentWheel.steeringMotorID, Constants.ChassisConfigs.CHASSIS_CANIVORE_NAME);
         final CANcoder canCoder = new CANcoder(currentWheel.steeringMotorID, Constants.ChassisConfigs.CHASSIS_CANIVORE_NAME);
         SmartDashboard.putString("Calibration/CurrentWheel", currentWheel.name);
-        final boolean steeringMotorInverted = switch (wheelTurningDirectionSendableChooser.getSelected()){
+        steeringMotorInverted = switch (wheelTurningDirectionSendableChooser.getSelected()){
             case NOT_INVERTED -> false;
             case INVERTED -> true;
         };
@@ -86,20 +86,35 @@ public class WheelsCalibration implements UnitTest {
         else
             steeringMotor.set(0);
 
-        if (xboxController.getXButton() && (!wasPressed)) {
-            final MapleConfigFile.ConfigBlock configBlock = calibrationFile.getBlock(currentWheel.name);
-            configBlock.putIntConfig("drivingMotorID", currentWheel.drivingMotorID);
-            configBlock.putIntConfig("drivingMotorPortOnPDP", currentWheel.drivingMotorPortOnPDP);
-            configBlock.putIntConfig("steeringMotorID", currentWheel.steeringMotorID);
-            configBlock.putIntConfig("steeringMotorPortOnPDP", currentWheel.steeringMotorPortOnPDP);
-            configBlock.putIntConfig("steeringEncoderID", currentWheel.encoderID);
-
-            configBlock.putIntConfig("steeringMotorInverted", steeringMotorInverted ? 1 : 0);
-            configBlock.putDoubleConfig("steeringEncoderReadingAtOrigin", AngleHelpers.simplifyAngle(canCoder.getAbsolutePosition().getValue() * Math.PI * 2));
-            i++;
-            if (i > 3)
-                calibrationFile.saveConfigToUSBSafe();
-        }
+        if (xboxController.getXButton() && (!wasPressed))
+            saveConfigurationForCurrentWheel(currentWheel,canCoder.getAbsolutePosition().getValue() * Math.PI * 2);
         wasPressed = xboxController.getXButton();
+    }
+
+    private void saveConfigurationForCurrentWheel(Wheel currentWheel, double canCoderAbsolutePosition) {
+        final MapleConfigFile.ConfigBlock configBlock = calibrationFile.getBlock(currentWheel.name);
+        configBlock.putIntConfig("drivingMotorID", currentWheel.drivingMotorID);
+        configBlock.putIntConfig("drivingMotorPortOnPDP", currentWheel.drivingMotorPortOnPDP);
+        configBlock.putIntConfig("steeringMotorID", currentWheel.steeringMotorID);
+        configBlock.putIntConfig("steeringMotorPortOnPDP", currentWheel.steeringMotorPortOnPDP);
+        configBlock.putIntConfig("steeringEncoderID", currentWheel.encoderID);
+
+        configBlock.putIntConfig("steeringMotorInverted", steeringMotorInverted ? 1 : 0);
+        configBlock.putDoubleConfig("steeringEncoderReadingAtOrigin", AngleHelpers.simplifyAngle(canCoderAbsolutePosition));
+        i++;
+        if (i > 3)
+            writeConfigurationFile();
+    }
+
+    private void writeConfigurationFile() {
+        final MapleConfigFile.ConfigBlock configBlock = calibrationFile.getBlock("GeneralInformation");
+        configBlock.putDoubleConfig("overallGearRatio", Constants.ChassisConfigs.DEFAULT_GEAR_RATIO);
+        configBlock.putDoubleConfig("chassisWidthMeters", Constants.ChassisConfigs.DEFAULT_WIDTH_METERS);
+        configBlock.putDoubleConfig("chassisLengthMeters", Constants.ChassisConfigs.DEFAULT_LENGTH_METERS);
+        configBlock.putDoubleConfig("maxVelocityMetersPerSecond", Constants.ChassisConfigs.DEFAULT_MAX_VELOCITY_METERS_PER_SECOND);
+        configBlock.putDoubleConfig("maxAccelerationMetersPerSecondSquared", Constants.ChassisConfigs.DEFAULT_MAX_ACCELERATION_METERS_PER_SQUARED_SECOND);
+        configBlock.putDoubleConfig("maxAngularVelocityRadiansPerSecond", Math.toRadians(Constants.ChassisConfigs.DEFAULT_MAX_ANGULAR_VELOCITY_DEGREES_PER_SECOND));
+
+        calibrationFile.saveConfigToUSBSafe();
     }
 }
