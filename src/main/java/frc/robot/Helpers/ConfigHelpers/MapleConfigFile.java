@@ -113,6 +113,7 @@ public class MapleConfigFile {
                 ConfigBlock block = new ConfigBlock(blockName);
                 readBlockConfig(blockElement, block);
                 configFile.configBlocks.put(blockName, block);
+                configFile.configBlocksOrder.add(blockName);
             }
         }
     }

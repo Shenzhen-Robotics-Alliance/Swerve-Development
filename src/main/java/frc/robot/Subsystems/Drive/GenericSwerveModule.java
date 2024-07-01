@@ -55,14 +55,15 @@ public class GenericSwerveModule extends SwerveModule {
         super.periodic(dt);
 
 
-        steerHeadingCloseLoop.setDesiredPosition(super.calculatedWheelHeadingSetPoint);
+        steerHeadingCloseLoop.setDesiredPosition(super.calculatedSteerSetPoint);
         steeringMotor.setMotorPower(steerHeadingCloseLoop.getMotorPower(steerEncoder.getAngularVelocity(), steerEncoder.getLatestAbsoluteRotationRadian()));
+        Logger.recordOutput(super.logPath + "/steer closed loop power", steerHeadingCloseLoop.getMotorPower(steerEncoder.getAngularVelocity(), steerEncoder.getLatestAbsoluteRotationRadian()));
         // TODO wheel speed feed-forward
         drivingMotor.setMotorPower(super.calculatedDriveSpeedSetPoint / Constants.ChassisConfigs.DEFAULT_MAX_VELOCITY_METERS_PER_SECOND);
 
-        Logger.recordOutput("drive encoder position", driveEncoder.getLatestPosition());
-        Logger.recordOutput("steer encoder rotation (deg)", Math.toDegrees(steerEncoder.getLatestAbsoluteRotationRadian()));
-        Logger.recordOutput("steer encoder rotation (rad)", steerEncoder.getLatestAbsoluteRotationRadian());
+        Logger.recordOutput(super.logPath + "/drive encoder position", driveEncoder.getLatestPosition()); // TODO: swerve position not right
+        Logger.recordOutput(super.logPath + "/steer encoder rotation (deg)", Math.toDegrees(steerEncoder.getLatestAbsoluteRotationRadian()));
+        Logger.recordOutput(super.logPath + "/steer encoder rotation (rad)", steerEncoder.getLatestAbsoluteRotationRadian());
     }
 
     @Override

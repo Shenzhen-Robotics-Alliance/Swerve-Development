@@ -3,7 +3,13 @@ package frc.robot;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.kinematics.Kinematics;
+import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.PowerDistribution;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -17,7 +23,7 @@ import java.io.IOException;
 
 public class RobotContainer {
     public static PowerDistribution powerDistribution;
-    // private final GenericSwerveModule testSwerveImplement;
+    private final GenericSwerveModule testSwerveImplement;
     public RobotContainer(String chassisName) {
         if (Robot.mode == Robot.Mode.REAL)
             powerDistribution = new PowerDistribution(0, PowerDistribution.ModuleType.kCTRE);
@@ -32,7 +38,7 @@ public class RobotContainer {
         } catch (IOException e) {
             throw new RuntimeException("Cannot Find Wheels Calibration File For Chassis: " + chassisName + ", because:" + e.getMessage());
         }
-        // this.testSwerveImplement = createSwerveModuleCTRE("FrontLeft", chassisWheelsCalibrationFile);
+        this.testSwerveImplement = createSwerveModuleCTRE("FrontLeft", chassisWheelsCalibrationFile);
 
         configureBindings();
     }
@@ -77,6 +83,16 @@ public class RobotContainer {
         PeriodicallyUpdatedInputs.updateInputs();
         MapleSubsystem.subsystemsPeriodic();
         CommandScheduler.getInstance().run();
+    }
+
+    @Deprecated
+    public void testUnitFeatures() {
+        SwerveDriveKinematics swerveDriveKinematics = new SwerveDriveKinematics(
+                new Translation2d(1, 1),
+                new Translation2d(1,-1)
+        );
+        XboxController xboxController = new XboxController(1);
+        this.testSwerveImplement.requestSetPoint(swerveDriveKinematics.toWheelSpeeds(new ChassisSpeeds(xboxController.getRightX(), -xboxController.getRightY(), xboxController.getLeftX())).states[0]);
     }
 
     public Command getAutonomousCommand() {
