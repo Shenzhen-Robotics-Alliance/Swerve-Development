@@ -13,7 +13,9 @@ import java.nio.file.Paths;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class MapleConfigFile {
@@ -59,6 +61,7 @@ public class MapleConfigFile {
     }
 
     private final Map<String, ConfigBlock> configBlocks = new HashMap<>();
+    private final List<String> configBlocksOrder = new ArrayList<>();
 
     public MapleConfigFile(String configType, String configName) {
         this.configType = configType;
@@ -66,8 +69,10 @@ public class MapleConfigFile {
     }
 
     public ConfigBlock getBlock(String blockName) {
-        if (!configBlocks.containsKey(blockName))
+        if (!configBlocksOrder.contains(blockName)) {
             configBlocks.put(blockName, new ConfigBlock(blockName));
+            configBlocksOrder.add(blockName);
+        }
         return configBlocks.get(blockName);
     }
 
@@ -160,7 +165,9 @@ public class MapleConfigFile {
     }
 
     private static void writeConfigBlocks(MapleConfigFile config, FileWriter writer) throws IOException {
-        for (ConfigBlock block : config.configBlocks.values()) {
+        for (String blockName : config.configBlocksOrder) {
+            System.out.println("block name: " + blockName);
+            final ConfigBlock block = config.configBlocks.get(blockName);
             writer.write("    <" + block.blockName + ">\n");
             writeDoubleConfigs(block, writer);
             writeIntConfigs(block, writer);

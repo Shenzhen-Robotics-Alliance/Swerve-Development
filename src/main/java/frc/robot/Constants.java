@@ -1,6 +1,7 @@
 package frc.robot;
 
 import frc.robot.Helpers.MechanismControlHelpers.MapleSimplePIDController;
+import frc.robot.UnitTests.WheelsCalibration;
 
 public final class Constants {
     public static final class LogConfigs {
@@ -15,7 +16,7 @@ public final class Constants {
     public static final class ChassisConfigs {
         public static final double ODOMETRY_FREQ = 250;
         public static final int ODOMETRY_QUEUE_LENGTH_LIMIT = 100;
-        public static final String CHASSIS_CANIVORE_NAME = "ChassisCanivore";
+        public static final String CHASSIS_CANBUS_NAME = "ChassisCanivore";
 
         public static final double DEFAULT_GEAR_RATIO = 6.12;
         public static final double DEFAULT_WIDTH_METERS = 0.876; // 34.5 inch
@@ -39,5 +40,14 @@ public final class Constants {
         );
         public static final double STEERING_CURRENT_LIMIT = 20;
         public static final double DRIVING_CURRENT_LIMIT = 60;
+    }
+
+    public static final class WheelCalibrationConfigs {
+        public static final WheelsCalibration.WheelToBeCalibrated[] wheelsToBeCalibrated = new WheelsCalibration.WheelToBeCalibrated[] {
+                new WheelsCalibration.WheelToBeCalibrated("FrontLeft", 3, 4, 10),
+                new WheelsCalibration.WheelToBeCalibrated("FrontRight", 6, 5, 11),
+                new WheelsCalibration.WheelToBeCalibrated("BackLeft", 1, 2, 9),
+                new WheelsCalibration.WheelToBeCalibrated("BackRight", 8, 7, 12)
+        };
     }
 }

@@ -1,45 +1,46 @@
 <ChassisWheelsCalibration>
+    <GeneralInformation>
+        <maxAngularVelocityRadiansPerSecond type="double">9.42477796076938</maxAngularVelocityRadiansPerSecond>
+        <maxAccelerationMetersPerSecondSquared type="double">10.184</maxAccelerationMetersPerSecondSquared>
+        <overallGearRatio type="double">6.12</overallGearRatio>
+        <chassisWidthMeters type="double">0.876</chassisWidthMeters>
+        <maxVelocityMetersPerSecond type="double">4.172</maxVelocityMetersPerSecond>
+        <chassisLengthMeters type="double">0.876</chassisLengthMeters>
+    </GeneralInformation>
     <FrontLeft>
-        <drivingMotorID type="int">1</drivingMotorID>
-        <drivingMotorPortOnPDP type="int">1</drivingMotorPortOnPDP>
-        <steeringMotorID type="int">2</steeringMotorID>
-        <steeringMotorPortOnPDP type="int">2</steeringMotorPortOnPDP>
-        <steeringEncoderID type="int">1</steeringEncoderID>
-
-        <steeringMotorInverted type="int">1</steeringMotorInverted> <!-- should be turning counter-clockwise -->
-        <steeringEncoderReadingAtOrigin type="double">0.35</steeringEncoderReadingAtOrigin>
+        <steeringEncoderReadingAtOrigin type="double">5.814435307179586</steeringEncoderReadingAtOrigin>
+        <steeringMotorPortOnPDP type="int">-1</steeringMotorPortOnPDP>
+        <steeringEncoderID type="int">10</steeringEncoderID>
+        <drivingMotorPortOnPDP type="int">-1</drivingMotorPortOnPDP>
+        <drivingMotorID type="int">3</drivingMotorID>
+        <steeringMotorInverted type="int">1</steeringMotorInverted>
+        <steeringMotorID type="int">4</steeringMotorID>
     </FrontLeft>
-
     <FrontRight>
-        <drivingMotorID type="int">1</drivingMotorID>
-        <drivingMotorPortOnPDP type="int">1</drivingMotorPortOnPDP>
-        <steeringMotorID type="int">2</steeringMotorID>
-        <steeringMotorPortOnPDP type="int">2</steeringMotorPortOnPDP>
-        <steeringEncoderID type="int">1</steeringEncoderID>
-
-        <steeringMotorInverted type="int">1</steeringMotorInverted> <!-- should be turning counter-clockwise -->
-        <steeringEncoderReadingAtOrigin type="double">0.35</steeringEncoderReadingAtOrigin>
+        <steeringEncoderReadingAtOrigin type="double">0.27978515625</steeringEncoderReadingAtOrigin>
+        <steeringMotorPortOnPDP type="int">-1</steeringMotorPortOnPDP>
+        <steeringEncoderID type="int">11</steeringEncoderID>
+        <drivingMotorPortOnPDP type="int">-1</drivingMotorPortOnPDP>
+        <drivingMotorID type="int">6</drivingMotorID>
+        <steeringMotorInverted type="int">1</steeringMotorInverted>
+        <steeringMotorID type="int">5</steeringMotorID>
     </FrontRight>
-
     <BackLeft>
+        <steeringEncoderReadingAtOrigin type="double">0.058837890625</steeringEncoderReadingAtOrigin>
+        <steeringMotorPortOnPDP type="int">-1</steeringMotorPortOnPDP>
+        <steeringEncoderID type="int">9</steeringEncoderID>
+        <drivingMotorPortOnPDP type="int">-1</drivingMotorPortOnPDP>
         <drivingMotorID type="int">1</drivingMotorID>
-        <drivingMotorPortOnPDP type="int">1</drivingMotorPortOnPDP>
+        <steeringMotorInverted type="int">1</steeringMotorInverted>
         <steeringMotorID type="int">2</steeringMotorID>
-        <steeringMotorPortOnPDP type="int">2</steeringMotorPortOnPDP>
-        <steeringEncoderID type="int">1</steeringEncoderID>
-
-        <steeringMotorInverted type="int">1</steeringMotorInverted> <!-- should be turning counter-clockwise -->
-        <steeringEncoderReadingAtOrigin type="double">0.35</steeringEncoderReadingAtOrigin>
     </BackLeft>
-
     <BackRight>
-        <drivingMotorID type="int">1</drivingMotorID>
-        <drivingMotorPortOnPDP type="int">1</drivingMotorPortOnPDP>
-        <steeringMotorID type="int">2</steeringMotorID>
-        <steeringMotorPortOnPDP type="int">2</steeringMotorPortOnPDP>
-        <steeringEncoderID type="int">1</steeringEncoderID>
-
-        <steeringMotorInverted type="int">1</steeringMotorInverted> <!-- should be turning counter-clockwise -->
-        <steeringEncoderReadingAtOrigin type="double">0.35</steeringEncoderReadingAtOrigin>
+        <steeringEncoderReadingAtOrigin type="double">0.017333984375</steeringEncoderReadingAtOrigin>
+        <steeringMotorPortOnPDP type="int">-1</steeringMotorPortOnPDP>
+        <steeringEncoderID type="int">12</steeringEncoderID>
+        <drivingMotorPortOnPDP type="int">-1</drivingMotorPortOnPDP>
+        <drivingMotorID type="int">8</drivingMotorID>
+        <steeringMotorInverted type="int">1</steeringMotorInverted>
+        <steeringMotorID type="int">7</steeringMotorID>
     </BackRight>
 </ChassisWheelsCalibration>

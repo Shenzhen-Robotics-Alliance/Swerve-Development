@@ -46,23 +46,21 @@ public class Robot extends LoggedRobot {
             }
         }
 
+        robotContainer = new RobotContainer("5516-2024-OnSeason");
         // Start AdvantageKit logger
         Logger.start();
 
-        robotContainer = new RobotContainer("5516-2024-OnSeason");
         MapleSubsystem.subsystemsInit();
     }
 
     @Override
     public void robotPeriodic() {
-        PeriodicallyUpdatedInputs.updateInputs();
-        MapleSubsystem.subsystemsPeriodic();
-        CommandScheduler.getInstance().run();
+
     }
 
     @Override
     public void disabledPeriodic() {
-
+        robotContainer.updateRobot();
     }
 
     @Override
@@ -76,6 +74,7 @@ public class Robot extends LoggedRobot {
 
     @Override
     public void autonomousPeriodic() {
+        robotContainer.updateRobot();
     }
 
     @Override
@@ -92,6 +91,7 @@ public class Robot extends LoggedRobot {
 
     @Override
     public void teleopPeriodic() {
+        robotContainer.updateRobot();
     }
 
     @Override

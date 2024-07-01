@@ -25,7 +25,7 @@ public abstract class MapleSubsystem extends SubsystemBase {
     }
 
     private static boolean wasEnabled = false;
-    public static void subsystemsPeriodic() {
+    public static void subsystemsPeriodic() { // TODO remove this and make it in timed robot
         // periodic() is called from CommandScheduler, we only need to check for enable/disable
 
         if (DriverStation.isEnabled() && (!wasEnabled))
