@@ -37,10 +37,8 @@ public abstract class MapleSubsystem extends SubsystemBase {
     }
     private static void enableSubsystems() {
         for (MapleSubsystem instance:instances)
-            if (!instance.updateDuringDisabled) {
-                instance.onReset();
+            if (!instance.updateDuringDisabled)
                 instance.onEnable();
-            }
     }
 
     private static void disableSubsystems() {

@@ -23,9 +23,12 @@ public final class Constants {
         public static final String CHASSIS_CANBUS_NAME = "ChassisCanivore";
 
         public static final double DEFAULT_GEAR_RATIO = 6.12;
+
         public static final double DEFAULT_WHEEL_RADIUS_METERS = 0.051; // 2 inch
-        public static final double DEFAULT_WIDTH_METERS = 0.876; // 34.5 inch
-        public static final double DEFAULT_LENGTH_METERS = 0.876; // 34.5 inch
+        public static final double DEFAULT_BUMPER_WIDTH_METERS = 0.876; // 34.5 inch
+        public static final double DEFAULT_LEFT_RIGHT_WHEELS_DISTANCE_METERS = 0.53;
+        public static final double DEFAULT_FRONT_BACK_WHEELS_DISTANCE_METERS = 0.53;
+        public static final double DEFAULT_BUMPER_LENGTH_METERS = 0.876; // 34.5 inch
         public static final double DEFAULT_MAX_VELOCITY_METERS_PER_SECOND = 4.172; // calculated from Choreo (Kraken x60 motor, 6.12 gear ratio, 55kg robot mass)
         public static final double DEFAULT_MAX_ACCELERATION_METERS_PER_SQUARED_SECOND = 10.184; // calculated from Choreo (Kraken x60 motor, 6.12 gear ratio, 55kg robot mass)
         public static final double DEFAULT_MAX_ANGULAR_VELOCITY_DEGREES_PER_SECOND = 540;

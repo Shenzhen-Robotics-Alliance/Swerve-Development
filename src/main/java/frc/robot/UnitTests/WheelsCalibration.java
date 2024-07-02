@@ -93,8 +93,10 @@ public class WheelsCalibration implements UnitTest {
         final MapleConfigFile.ConfigBlock configBlock = calibrationFile.getBlock("GeneralInformation");
         configBlock.putDoubleConfig("overallGearRatio", Constants.ChassisConfigs.DEFAULT_GEAR_RATIO);
         configBlock.putDoubleConfig("wheelRadiusMeters", Constants.ChassisConfigs.DEFAULT_WHEEL_RADIUS_METERS);
-        configBlock.putDoubleConfig("chassisWidthMeters", Constants.ChassisConfigs.DEFAULT_WIDTH_METERS);
-        configBlock.putDoubleConfig("chassisLengthMeters", Constants.ChassisConfigs.DEFAULT_LENGTH_METERS);
+        configBlock.putDoubleConfig("bumperWidthMeters", Constants.ChassisConfigs.DEFAULT_BUMPER_WIDTH_METERS);
+        configBlock.putDoubleConfig("bumperLengthMeters", Constants.ChassisConfigs.DEFAULT_BUMPER_LENGTH_METERS);
+        configBlock.putDoubleConfig("leftRightWheelsDistanceMeters", Constants.ChassisConfigs.DEFAULT_LEFT_RIGHT_WHEELS_DISTANCE_METERS);
+        configBlock.putDoubleConfig("frontBackWheelsDistanceMeters", Constants.ChassisConfigs.DEFAULT_FRONT_BACK_WHEELS_DISTANCE_METERS);
         configBlock.putDoubleConfig("maxVelocityMetersPerSecond", Constants.ChassisConfigs.DEFAULT_MAX_VELOCITY_METERS_PER_SECOND);
         configBlock.putDoubleConfig("maxAccelerationMetersPerSecondSquared", Constants.ChassisConfigs.DEFAULT_MAX_ACCELERATION_METERS_PER_SQUARED_SECOND);
         configBlock.putDoubleConfig("maxAngularVelocityRadiansPerSecond", Math.toRadians(Constants.ChassisConfigs.DEFAULT_MAX_ANGULAR_VELOCITY_DEGREES_PER_SECOND));

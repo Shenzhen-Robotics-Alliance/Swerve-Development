@@ -9,7 +9,6 @@ import frc.robot.HardwareIO.Abstractions.RawMotor;
 import frc.robot.HardwareIO.Helpers.LoggedAbsoluteRotationEncoder;
 import frc.robot.HardwareIO.Helpers.LoggedMotor;
 import frc.robot.HardwareIO.Helpers.LoggedRelativePositionEncoder;
-import frc.robot.HardwareIO.Helpers.PeriodicallyUpdatedInputs;
 import frc.robot.Helpers.MechanismControlHelpers.MapleSimplePIDController;
 import org.littletonrobotics.junction.Logger;
 
@@ -55,6 +54,7 @@ public class SwerveModuleReal extends SwerveModule {
     @Override
     public void onReset() {
         super.onReset();
+        driveEncoder.setCurrentPositionAs(0);
     }
 
     @Override
