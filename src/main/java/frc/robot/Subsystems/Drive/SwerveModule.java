@@ -12,7 +12,7 @@ import org.littletonrobotics.junction.Logger;
 public abstract class SwerveModule extends MapleSubsystem {
     protected final String logPath;
     private SwerveModuleState swerveStateSetPoint;
-    protected double calculatedDriveSpeedSetPoint, calculatedSteerSetPoint;
+    protected double calculatedDriveSpeedSetPoint, calculatedSteeringSetPoint;
 
 
     public SwerveModule(String swerveName) {
@@ -24,12 +24,12 @@ public abstract class SwerveModule extends MapleSubsystem {
     public void onReset() {
         this.swerveStateSetPoint = new SwerveModuleState();
         this.calculatedDriveSpeedSetPoint = 0;
-        this.calculatedSteerSetPoint = 0;
+        this.calculatedSteeringSetPoint = 0;
     }
 
     double previousMovementTime = 0;
     @Override
-    public void periodic(double dt) {
+    public void periodic(double dt, boolean enabled) {
         final double rawSwerveSpeedSetPointHeading = swerveStateSetPoint.angle.getRadians(),
                 desiredDriveSpeed = swerveStateSetPoint.speedMetersPerSecond,
                 currentSwerveHeading = getActualSwerveModuleState().angle.getRadians();
@@ -46,14 +46,15 @@ public abstract class SwerveModule extends MapleSubsystem {
                 differenceToRawSetPoint = AngleHelpers.getActualDifference(currentSwerveHeading, swerveFacingSetPoint),
                 differenceToReversedSetPoint = AngleHelpers.getActualDifference(currentSwerveHeading, swerveFacingSetPoint + Math.PI);
 
-        if (Math.abs(differenceToReversedSetPoint) - Math.abs(differenceToRawSetPoint) > Math.toRadians(10))
-            this.calculatedSteerSetPoint = AngleHelpers.simplifyAngle(swerveFacingSetPoint + Math.PI);
+        if (Math.abs(differenceToReversedSetPoint) < Math.abs(differenceToRawSetPoint))
+            this.calculatedSteeringSetPoint = AngleHelpers.simplifyAngle(swerveFacingSetPoint + Math.PI);
         else
-            this.calculatedSteerSetPoint = swerveFacingSetPoint;
+            this.calculatedSteeringSetPoint = swerveFacingSetPoint;
 
+        Logger.recordOutput(logPath + "/rawSwerveSpeedSetPointHeading", rawSwerveSpeedSetPointHeading);
         Logger.recordOutput(logPath + "/swerveStateSetpoint", swerveStateSetPoint);
         Logger.recordOutput(logPath + "/calculatedWheelSpeed", calculatedDriveSpeedSetPoint);
-        Logger.recordOutput(logPath + "/calculatedSwerveHeadingSetpoint", calculatedSteerSetPoint);
+        Logger.recordOutput(logPath + "/calculatedSteeringSetpoint", calculatedSteeringSetPoint);
     }
 
     public void requestSetPoint(SwerveModuleState setPoint) {

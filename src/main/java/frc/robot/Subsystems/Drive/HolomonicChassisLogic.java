@@ -21,7 +21,7 @@ public abstract class HolomonicChassisLogic extends MapleSubsystem {
     }
 
     @Override
-    public void periodic(double dt) {
+    public void periodic(double dt, boolean enabled) {
 
     }
 

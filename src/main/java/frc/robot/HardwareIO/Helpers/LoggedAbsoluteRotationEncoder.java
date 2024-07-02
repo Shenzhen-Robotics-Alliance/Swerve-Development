@@ -44,11 +44,12 @@ public class LoggedAbsoluteRotationEncoder implements PeriodicallyUpdatedInputs.
         Logger.processInputs(Constants.LogConfigs.SENSORS_INPUTS_PATH + sensorPath, inputs);
 
         processAbsoluteRotations();
+        Logger.recordOutput(Constants.LogConfigs.SENSORS_PROCESSED_INPUTS_PATH + sensorPath + "/latestUncalibratedPosition (Rad)", AngleHelpers.simplifyAngle(inputs.latestUncalibratedPosition * Math.PI * 2));
         Logger.recordOutput(Constants.LogConfigs.SENSORS_PROCESSED_INPUTS_PATH + sensorPath + "/zeroPosition", zeroPosition);
-        Logger.recordOutput(Constants.LogConfigs.SENSORS_PROCESSED_INPUTS_PATH + sensorPath + "/angularVelocity", getAngularVelocity());
         Logger.recordOutput(Constants.LogConfigs.SENSORS_PROCESSED_INPUTS_PATH + sensorPath + "/latestAbsoluteRotationRadian", getLatestAbsoluteRotationRadian());
         Logger.recordOutput(Constants.LogConfigs.SENSORS_PROCESSED_INPUTS_PATH + sensorPath + "/absoluteRotationsRadian", getAbsoluteRotations());
         Logger.recordOutput(Constants.LogConfigs.SENSORS_PROCESSED_INPUTS_PATH + sensorPath + "/timeStamps", getTimeStamps());
+        Logger.recordOutput(Constants.LogConfigs.SENSORS_PROCESSED_INPUTS_PATH + sensorPath + "/angularVelocity", getAngularVelocity());
     }
 
     private void processAbsoluteRotations() {

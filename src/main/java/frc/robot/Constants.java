@@ -32,9 +32,9 @@ public final class Constants {
 
         public static final MapleSimplePIDController.SimplePIDProfile steerHeadingCloseLoop = new MapleSimplePIDController.SimplePIDProfile(
                 0.75,
-                Math.toRadians(45),
-                0.02,
-                Math.toRadians(1),
+                Math.toRadians(90),
+                0.01,
+                Math.toRadians(1.5),
                 0,
                 true
         );

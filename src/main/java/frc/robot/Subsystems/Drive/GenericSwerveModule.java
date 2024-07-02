@@ -1,5 +1,6 @@
 package frc.robot.Subsystems.Drive;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import frc.robot.Constants;
@@ -32,7 +33,7 @@ public class GenericSwerveModule extends SwerveModule {
 
     @Override
     public SwerveModuleState getActualSwerveModuleState() {
-        return new SwerveModuleState();
+        return new SwerveModuleState(driveEncoder.getVelocity(), Rotation2d.fromRadians(steerEncoder.getLatestAbsoluteRotationRadian()));
     }
 
     @Override
@@ -51,17 +52,17 @@ public class GenericSwerveModule extends SwerveModule {
     }
 
     @Override
-    public void periodic(double dt) {
-        super.periodic(dt);
+    public void periodic(double dt, boolean enabled) {
+        super.periodic(dt, enabled);
 
-
-        steerHeadingCloseLoop.setDesiredPosition(super.calculatedSteerSetPoint);
-        steeringMotor.setMotorPower(steerHeadingCloseLoop.getMotorPower(steerEncoder.getAngularVelocity(), steerEncoder.getLatestAbsoluteRotationRadian()));
+        steerHeadingCloseLoop.setDesiredPosition(super.calculatedSteeringSetPoint);
+        if (enabled) steeringMotor.setMotorPower(steerHeadingCloseLoop.getMotorPower(steerEncoder.getAngularVelocity(), steerEncoder.getLatestAbsoluteRotationRadian()));
         Logger.recordOutput(super.logPath + "/steer closed loop power", steerHeadingCloseLoop.getMotorPower(steerEncoder.getAngularVelocity(), steerEncoder.getLatestAbsoluteRotationRadian()));
-        // TODO wheel speed feed-forward
-        drivingMotor.setMotorPower(super.calculatedDriveSpeedSetPoint / Constants.ChassisConfigs.DEFAULT_MAX_VELOCITY_METERS_PER_SECOND);
 
-        Logger.recordOutput(super.logPath + "/drive encoder position", driveEncoder.getLatestPosition()); // TODO: swerve position not right
+        // TODO wheel speed feed-forward
+        if (enabled) drivingMotor.setMotorPower(super.calculatedDriveSpeedSetPoint / Constants.ChassisConfigs.DEFAULT_MAX_VELOCITY_METERS_PER_SECOND);
+
+        Logger.recordOutput(super.logPath + "/drive encoder position", driveEncoder.getLatestPosition());
         Logger.recordOutput(super.logPath + "/steer encoder rotation (deg)", Math.toDegrees(steerEncoder.getLatestAbsoluteRotationRadian()));
         Logger.recordOutput(super.logPath + "/steer encoder rotation (rad)", steerEncoder.getLatestAbsoluteRotationRadian());
     }
@@ -74,8 +75,8 @@ public class GenericSwerveModule extends SwerveModule {
 
     @Override
     public void onDisable() {
-        steeringMotor.rawMotor.configureZeroPowerBehavior(RawMotor.ZeroPowerBehavior.RELAX);
-        drivingMotor.rawMotor.configureZeroPowerBehavior(RawMotor.ZeroPowerBehavior.RELAX);
+        steeringMotor.relax();
+        drivingMotor.relax();
     }
 
     public List<TimeStampedEncoderReal> getOdometryEncoders() {

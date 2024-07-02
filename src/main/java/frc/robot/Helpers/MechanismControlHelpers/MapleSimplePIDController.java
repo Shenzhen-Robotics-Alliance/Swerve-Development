@@ -2,6 +2,7 @@ package frc.robot.Helpers.MechanismControlHelpers;
 
 import frc.robot.Helpers.MathHelpers.AngleHelpers;
 import frc.robot.Helpers.MathHelpers.LookUpTable;
+import org.littletonrobotics.junction.Logger;
 
 /**
  * This is an easy tool to control mechanisms with the most basic PID algorithm.
@@ -23,14 +24,19 @@ public class MapleSimplePIDController implements SingleDimensionMechanismControl
     @Override
     public double getMotorPower(double mechanismVelocity, double mechanismPosition) {
         final double
-                mechanismPositionWithFeedForward = mechanismPosition + mechanismVelocity * profile.mechanismDecelerationTime,
+                mechanismPositionWithDerivative = mechanismPosition + mechanismVelocity * profile.mechanismDecelerationTime,
                 error = profile.isMechanismInCycle ?
-                        AngleHelpers.getActualDifference(mechanismPositionWithFeedForward, desiredPosition)
-                        : desiredPosition - mechanismPositionWithFeedForward;
+                        AngleHelpers.getActualDifference(mechanismPositionWithDerivative, desiredPosition)
+                        : desiredPosition - mechanismPositionWithDerivative;
         if (Math.abs(error) < profile.errorTolerance)
             return 0;
-        final double power = LookUpTable.linearInterpretationWithBounding(profile.errorTolerance, profile.minimumPower, profile.errorStartDecelerate, profile.maximumPower, Math.abs(error));
-        return Math.copySign(power, error);
+        final double unsignedPower = LookUpTable.linearInterpretationWithBounding(profile.errorTolerance, profile.minimumPower, profile.errorStartDecelerate, profile.maximumPower, Math.abs(error)),
+                correctionPower = Math.copySign(unsignedPower, error);
+        Logger.recordOutput("/ClosedLoops/MapleSimplePID/currentPositionWithDerivative", mechanismPositionWithDerivative);
+        Logger.recordOutput("/ClosedLoops/MapleSimplePID/desiredPosition", desiredPosition);
+        Logger.recordOutput("/ClosedLoops/MapleSimplePID/error", error);
+        Logger.recordOutput("/ClosedLoops/MapleSimplePID/power", correctionPower);
+        return correctionPower;
     }
 
     public void setDesiredPosition(double desiredPosition) {

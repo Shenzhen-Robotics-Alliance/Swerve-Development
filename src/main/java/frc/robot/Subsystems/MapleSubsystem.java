@@ -25,7 +25,7 @@ public abstract class MapleSubsystem extends SubsystemBase {
     }
 
     private static boolean wasEnabled = false;
-    public static void subsystemsPeriodic() { // TODO remove this and make it in timed robot
+    public static void checkForOnDisableAndEnable() { // TODO remove this and make it in timed robot
         // periodic() is called from CommandScheduler, we only need to check for enable/disable
 
         if (DriverStation.isEnabled() && (!wasEnabled))
@@ -62,12 +62,12 @@ public abstract class MapleSubsystem extends SubsystemBase {
     public void onEnable() {}
     public void onDisable() {}
     public abstract void onReset();
-    public abstract void periodic(double dt);
+    public abstract void periodic(double dt, boolean enabled);
 
     @Override
     public void periodic() {
         final long t0 = System.nanoTime();
-        periodic(getDt());
+        periodic(getDt(), DriverStation.isEnabled());
         final double cpuTimeMS = (System.nanoTime() - t0) / 1_000_000.0;
         Logger.recordOutput(Constants.LogConfigs.SYSTEM_PERFORMANCE_PATH + getName() + "-CPUTimeMS", cpuTimeMS);
     }

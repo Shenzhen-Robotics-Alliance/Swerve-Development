@@ -5,9 +5,7 @@ import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.kinematics.Kinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
-import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -81,7 +79,7 @@ public class RobotContainer {
 
     public void updateRobot() {
         PeriodicallyUpdatedInputs.updateInputs();
-        MapleSubsystem.subsystemsPeriodic();
+        MapleSubsystem.checkForOnDisableAndEnable();
         CommandScheduler.getInstance().run();
     }
 
