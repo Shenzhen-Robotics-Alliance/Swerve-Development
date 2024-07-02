@@ -19,14 +19,14 @@ public class HardwareFactory {
         if (Robot.mode != Robot.Mode.REAL)
             return new LoggedRelativePositionEncoder(name);
         final TalonFXMotorAndEncoderImpl talonFXMotorAndEncoder= new TalonFXMotorAndEncoderImpl(talonFXInstance, inverted);
-        return new LoggedRelativePositionEncoder(name, talonFXMotorAndEncoder.toThreadedEncoder());
+        return new LoggedRelativePositionEncoder(name, talonFXMotorAndEncoder.toOdometryEncoder());
     }
 
     public static LoggedAbsoluteRotationEncoder createAbsoluteRotationEncoderThreaded(String name, CANcoder canCoderInstance) {
         if (Robot.mode != Robot.Mode.REAL)
             return new LoggedAbsoluteRotationEncoder(name);
         final CanCoderEncoderImpl canCoderEncoder = new CanCoderEncoderImpl(canCoderInstance);
-        return new LoggedAbsoluteRotationEncoder(name, canCoderEncoder.toThreadedEncoder());
+        return new LoggedAbsoluteRotationEncoder(name, canCoderEncoder.toOdometryEncoder());
     }
 
     public static LoggedRelativePositionEncoder createRelativePositionEncoder(String name, TalonFX talonFXInstance, boolean inverted) {
@@ -47,6 +47,6 @@ public class HardwareFactory {
         if (Robot.mode != Robot.Mode.REAL)
             return new LoggedGyro(name);
         final Pigeon2EncoderImpl pigeon2Encoder = new Pigeon2EncoderImpl(pigeon2);
-        return new LoggedGyro(name, pigeon2Encoder.toThreadedEncoder());
+        return new LoggedGyro(name, pigeon2Encoder.toOdometryEncoder());
     }
 }
