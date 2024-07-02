@@ -81,7 +81,11 @@ public class WheelsCalibration implements UnitTest {
             case INVERTED -> true;
         };
 
-        SmartDashboard.putNumber("Can Coder Reading", canCoder.getAbsolutePosition().getValue());
+        SmartDashboard.putNumber("Can Coder Reading (Rad)", getCanCoderReadingRadian(canCoder));
+    }
+
+    private double getCanCoderReadingRadian(CANcoder canCoder) {
+        return AngleHelpers.simplifyAngle(canCoder.getAbsolutePosition().getValue() * Math.PI * 2);
     }
 
     private void writeConfigurationFile() {
@@ -112,7 +116,7 @@ public class WheelsCalibration implements UnitTest {
         configBlock.putIntConfig("steeringMotorInverted", wheelToBeCalibrated.steeringMotorInverted ? 1 : 0);
 
         final CANcoder canCoder = new CANcoder(wheelToBeCalibrated.encoderID, Constants.ChassisConfigs.CHASSIS_CANBUS_NAME);
-        configBlock.putDoubleConfig("steeringEncoderReadingAtOrigin", AngleHelpers.simplifyAngle(canCoder.getAbsolutePosition().getValue()));
+        configBlock.putDoubleConfig("steeringEncoderReadingAtOrigin", getCanCoderReadingRadian(canCoder));
     }
 
     private void initHardware(WheelToBeCalibrated wheelToBeCalibrated) {

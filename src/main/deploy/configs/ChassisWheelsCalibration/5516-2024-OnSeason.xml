@@ -8,7 +8,7 @@
         <chassisLengthMeters type="double">0.876</chassisLengthMeters>
     </GeneralInformation>
     <FrontLeft>
-        <steeringEncoderReadingAtOrigin type="double">5.814435307179586</steeringEncoderReadingAtOrigin>
+        <steeringEncoderReadingAtOrigin type="double">3.3195344249845276</steeringEncoderReadingAtOrigin>
         <steeringMotorPortOnPDP type="int">-1</steeringMotorPortOnPDP>
         <steeringEncoderID type="int">10</steeringEncoderID>
         <drivingMotorPortOnPDP type="int">-1</drivingMotorPortOnPDP>
@@ -17,7 +17,7 @@
         <steeringMotorID type="int">4</steeringMotorID>
     </FrontLeft>
     <FrontRight>
-        <steeringEncoderReadingAtOrigin type="double">0.27978515625</steeringEncoderReadingAtOrigin>
+        <steeringEncoderReadingAtOrigin type="double">1.7564080021290591</steeringEncoderReadingAtOrigin>
         <steeringMotorPortOnPDP type="int">-1</steeringMotorPortOnPDP>
         <steeringEncoderID type="int">11</steeringEncoderID>
         <drivingMotorPortOnPDP type="int">-1</drivingMotorPortOnPDP>
@@ -26,7 +26,7 @@
         <steeringMotorID type="int">5</steeringMotorID>
     </FrontRight>
     <BackLeft>
-        <steeringEncoderReadingAtOrigin type="double">0.058837890625</steeringEncoderReadingAtOrigin>
+        <steeringEncoderReadingAtOrigin type="double">0.34974761963792617</steeringEncoderReadingAtOrigin>
         <steeringMotorPortOnPDP type="int">-1</steeringMotorPortOnPDP>
         <steeringEncoderID type="int">9</steeringEncoderID>
         <drivingMotorPortOnPDP type="int">-1</drivingMotorPortOnPDP>
@@ -35,7 +35,7 @@
         <steeringMotorID type="int">2</steeringMotorID>
     </BackLeft>
     <BackRight>
-        <steeringEncoderReadingAtOrigin type="double">0.017333984375</steeringEncoderReadingAtOrigin>
+        <steeringEncoderReadingAtOrigin type="double">0.10737865515199488</steeringEncoderReadingAtOrigin>
         <steeringMotorPortOnPDP type="int">-1</steeringMotorPortOnPDP>
         <steeringEncoderID type="int">12</steeringEncoderID>
         <drivingMotorPortOnPDP type="int">-1</drivingMotorPortOnPDP>
