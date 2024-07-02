@@ -31,11 +31,11 @@ public final class Constants {
         public static final double NON_USAGE_TIME_RESET_SWERVE = 0.5;
 
         public static final MapleSimplePIDController.SimplePIDProfile steerHeadingCloseLoop = new MapleSimplePIDController.SimplePIDProfile(
-                0.75,
-                Math.toRadians(90),
+                0.9,
+                Math.toRadians(65),
                 0.01,
                 Math.toRadians(1.5),
-                0,
+                0.05,
                 true
         );
         public static final double STEERING_CURRENT_LIMIT = 20;
