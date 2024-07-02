@@ -1,7 +1,6 @@
 package frc.robot.HardwareIO.VendorImplements.CTRE;
 
 import com.ctre.phoenix6.hardware.Pigeon2;
-import frc.robot.HardwareIO.Abstractions.CTRETimeSynchronizedEncoder;
 
 public class Pigeon2EncoderImpl extends CTRETimeSynchronizedEncoder {
     private final Pigeon2 pigeon2Instance;

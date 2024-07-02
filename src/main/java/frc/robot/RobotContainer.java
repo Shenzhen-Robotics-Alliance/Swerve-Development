@@ -14,14 +14,17 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.HardwareIO.Helpers.*;
 import frc.robot.Helpers.ConfigHelpers.MapleConfigFile;
-import frc.robot.Subsystems.Drive.GenericSwerveModule;
+import frc.robot.Subsystems.Drive.OdometryThread;
+import frc.robot.Subsystems.Drive.SwerveModuleReal;
 import frc.robot.Subsystems.MapleSubsystem;
+import org.littletonrobotics.junction.Logger;
 
 import java.io.IOException;
 
 public class RobotContainer {
     public static PowerDistribution powerDistribution;
-    private final GenericSwerveModule testSwerveImplement;
+    private final SwerveModuleReal testSwerveImplement;
+    private final OdometryThread odometryThread;
     public RobotContainer(String chassisName) {
         if (Robot.mode == Robot.Mode.REAL)
             powerDistribution = new PowerDistribution(0, PowerDistribution.ModuleType.kCTRE);
@@ -38,10 +41,13 @@ public class RobotContainer {
         }
         this.testSwerveImplement = createSwerveModuleCTRE("FrontLeft", chassisWheelsCalibrationFile);
 
+        this.odometryThread = OdometryThread.getInstance();
+        odometryThread.start();
+
         configureBindings();
     }
 
-    private static GenericSwerveModule createSwerveModuleCTRE(String moduleName, MapleConfigFile calibrationFile) {
+    private static SwerveModuleReal createSwerveModuleCTRE(String moduleName, MapleConfigFile calibrationFile) {
         final MapleConfigFile.ConfigBlock configBlock = calibrationFile.getBlock(moduleName);
         final TalonFX drivingTalonFX = new TalonFX(configBlock.getIntConfig("drivingMotorID"), Constants.ChassisConfigs.CHASSIS_CANBUS_NAME),
                 steeringTalonFX = new TalonFX(configBlock.getIntConfig("steeringMotorID"), Constants.ChassisConfigs.CHASSIS_CANBUS_NAME);
@@ -58,7 +64,6 @@ public class RobotContainer {
         steeringTalonFX.getConfigurator().apply(steerMotorConfig, 500);
 
         // TODO: network tables alarm if configuration not successful
-
         final LoggedMotor
                 drivingMotor = HardwareFactory.createMotor(moduleName + "DrivingMotor", drivingTalonFX, false, configBlock.getIntConfig("drivingMotorPortOnPDP")),
                 steeringMotor = HardwareFactory.createMotor(
@@ -66,11 +71,11 @@ public class RobotContainer {
                         configBlock.getIntConfig("steeringMotorInverted") != 0,
                         configBlock.getIntConfig("steeringMotorPortOnPDP")
                 );
-        final LoggedRelativePositionEncoder drivingEncoder = HardwareFactory.createRelativePositionEncoder(moduleName + "DrivingEncoder", drivingTalonFX, false);
-        final LoggedAbsoluteRotationEncoder steeringEncoder = HardwareFactory.createAbsoluteRotationEncoder("FrontLeftSteeringEncoder", steeringCANcoder);
+        final LoggedRelativePositionEncoder drivingEncoder = HardwareFactory.createRelativePositionEncoderOnOdometry(moduleName + "DrivingEncoder", drivingTalonFX, false);
+        final LoggedAbsoluteRotationEncoder steeringEncoder = HardwareFactory.createAbsoluteRotationEncoderOnOdometry(moduleName + "SteeringEncoder", steeringCANcoder);
         steeringEncoder.setZeroPosition(configBlock.getDoubleConfig("steeringEncoderReadingAtOrigin"));
 
-        return new GenericSwerveModule(moduleName, drivingMotor, steeringMotor, drivingEncoder, steeringEncoder);
+        return new SwerveModuleReal(moduleName, drivingMotor, steeringMotor, drivingEncoder, steeringEncoder);
     }
 
     private void configureBindings() {
@@ -91,6 +96,7 @@ public class RobotContainer {
         );
         XboxController xboxController = new XboxController(1);
         this.testSwerveImplement.requestSetPoint(swerveDriveKinematics.toWheelSpeeds(new ChassisSpeeds(xboxController.getRightX(), -xboxController.getRightY(), xboxController.getLeftX())).states[0]);
+        Logger.recordOutput("/Odometer/TimeStamps", odometryThread.getOdometerMeasurementTimeStamps());
     }
 
     public Command getAutonomousCommand() {

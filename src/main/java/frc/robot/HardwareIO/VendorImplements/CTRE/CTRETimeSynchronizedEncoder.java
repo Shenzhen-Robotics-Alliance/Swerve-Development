@@ -1,8 +1,10 @@
-package frc.robot.HardwareIO.Abstractions;
+package frc.robot.HardwareIO.VendorImplements.CTRE;
 
 import com.ctre.phoenix6.StatusSignal;
 import frc.robot.Constants;
+import frc.robot.HardwareIO.Abstractions.RawEncoder;
 import frc.robot.HardwareIO.Helpers.TimeStampedEncoderReal;
+import frc.robot.Subsystems.Drive.OdometryThread;
 
 public abstract class CTRETimeSynchronizedEncoder implements RawEncoder {
     private final StatusSignal<Double> positionSignal;
@@ -25,7 +27,9 @@ public abstract class CTRETimeSynchronizedEncoder implements RawEncoder {
     public TimeStampedEncoderReal toOdometryEncoder() {
         isThreaded = true;
         positionSignal.setUpdateFrequency(Constants.ChassisConfigs.ODOMETRY_FREQ, Constants.ChassisConfigs.ODOMETER_TIMEOUT_SECONDS);
-        return new TimeStampedEncoderReal(this.getPositionSignal(), this);
+        final TimeStampedEncoderReal timeStampedEncoderReal = new TimeStampedEncoderReal(this.getPositionSignal(), this);
+        OdometryThread.registerOdometryEncoder(timeStampedEncoderReal);
+        return timeStampedEncoderReal;
     }
     public StatusSignal<Double> getPositionSignal() {
         return this.positionSignal;

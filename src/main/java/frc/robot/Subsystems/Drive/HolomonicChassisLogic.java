@@ -8,11 +8,8 @@ import frc.robot.Subsystems.MapleSubsystem;
 import java.util.List;
 
 public abstract class HolomonicChassisLogic extends MapleSubsystem {
-    private final OdometryThread odometryThread;
-    protected HolomonicChassisLogic(List<TimeStampedEncoderReal> odometryEncoders, boolean waitForOdometryTimeSync) {
+    protected HolomonicChassisLogic() {
         super("Chassis");
-        this.odometryThread = new OdometryThread(odometryEncoders, waitForOdometryTimeSync);
-        this.odometryThread.start();
     }
 
     @Override

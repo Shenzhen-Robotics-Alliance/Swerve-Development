@@ -18,7 +18,8 @@ public final class Constants {
         public static final double MOTORS_FREQ = 100;
         public static final double ODOMETER_TIMEOUT_SECONDS = 0.05;
         public static final double MOTORS_TIMEOUT_SECONDS = 0.25;
-        public static final int ODOMETRY_QUEUE_LENGTH_LIMIT = 100;
+        public static final int ODOMETRY_QUEUE_LENGTH_LIMIT = 10;
+        public static final boolean ODOMETRY_WAIT_FOR_TIME_SYNC = true;
         public static final String CHASSIS_CANBUS_NAME = "ChassisCanivore";
 
         public static final double DEFAULT_GEAR_RATIO = 6.12;

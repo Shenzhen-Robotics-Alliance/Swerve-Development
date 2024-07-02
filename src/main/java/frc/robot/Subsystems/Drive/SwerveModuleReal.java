@@ -8,14 +8,11 @@ import frc.robot.HardwareIO.Abstractions.RawMotor;
 import frc.robot.HardwareIO.Helpers.LoggedAbsoluteRotationEncoder;
 import frc.robot.HardwareIO.Helpers.LoggedMotor;
 import frc.robot.HardwareIO.Helpers.LoggedRelativePositionEncoder;
-import frc.robot.HardwareIO.Helpers.TimeStampedEncoderReal;
 import frc.robot.Helpers.MechanismControlHelpers.MapleSimplePIDController;
 import org.littletonrobotics.junction.Logger;
 
-import java.util.ArrayList;
-import java.util.List;
 
-public class GenericSwerveModule extends SwerveModule {
+public class SwerveModuleReal extends SwerveModule {
     private final LoggedMotor drivingMotor, steeringMotor;
     private final LoggedRelativePositionEncoder driveEncoder;
     private final LoggedAbsoluteRotationEncoder steerEncoder;
@@ -23,7 +20,7 @@ public class GenericSwerveModule extends SwerveModule {
             Constants.SwerveModuleConfigs.steerHeadingCloseLoop, 0
     );
 
-    public GenericSwerveModule(String swerveName, LoggedMotor drivingMotor, LoggedMotor steeringMotor, LoggedRelativePositionEncoder driveEncoder, LoggedAbsoluteRotationEncoder steerEncoder) {
+    public SwerveModuleReal(String swerveName, LoggedMotor drivingMotor, LoggedMotor steeringMotor, LoggedRelativePositionEncoder driveEncoder, LoggedAbsoluteRotationEncoder steerEncoder) {
         super(swerveName);
         this.drivingMotor = drivingMotor;
         this.steeringMotor = steeringMotor;
@@ -77,10 +74,5 @@ public class GenericSwerveModule extends SwerveModule {
     public void onDisable() {
         steeringMotor.relax();
         drivingMotor.relax();
-    }
-
-    public List<TimeStampedEncoderReal> getOdometryEncoders() {
-        /* for a generic odometry, we do not update any encoder in the odometer thread */
-        return new ArrayList<>();
     }
 }

@@ -15,14 +15,14 @@ public class HardwareFactory {
         return new LoggedMotor(name, rawMotor, portOnPDP);
     }
 
-    public static LoggedRelativePositionEncoder createRelativePositionEncoderThreaded(String name, TalonFX talonFXInstance, boolean inverted) {
+    public static LoggedRelativePositionEncoder createRelativePositionEncoderOnOdometry(String name, TalonFX talonFXInstance, boolean inverted) {
         if (Robot.mode != Robot.Mode.REAL)
             return new LoggedRelativePositionEncoder(name);
         final TalonFXMotorAndEncoderImpl talonFXMotorAndEncoder= new TalonFXMotorAndEncoderImpl(talonFXInstance, inverted);
         return new LoggedRelativePositionEncoder(name, talonFXMotorAndEncoder.toOdometryEncoder());
     }
 
-    public static LoggedAbsoluteRotationEncoder createAbsoluteRotationEncoderThreaded(String name, CANcoder canCoderInstance) {
+    public static LoggedAbsoluteRotationEncoder createAbsoluteRotationEncoderOnOdometry(String name, CANcoder canCoderInstance) {
         if (Robot.mode != Robot.Mode.REAL)
             return new LoggedAbsoluteRotationEncoder(name);
         final CanCoderEncoderImpl canCoderEncoder = new CanCoderEncoderImpl(canCoderInstance);
