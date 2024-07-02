@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.Helpers.ConfigHelpers.MapleConfigFile;
 import frc.robot.Subsystems.MapleSubsystem;
+import org.littletonrobotics.junction.AutoLogOutput;
 
 import java.util.function.Supplier;
 
@@ -36,6 +37,8 @@ public abstract class HolomonicChassisLogic extends MapleSubsystem {
     protected abstract void runChassisSpeeds(ChassisSpeeds chassisSpeeds);
     protected abstract void lockChassis();
     public abstract void setCurrentPose2d(Pose2d currentPose2d);
+
+    @AutoLogOutput(key = "/Odometry/LatestRobotPosition")
     public abstract Pose2d getCurrentRobotPose2d();
 
     /**
@@ -50,7 +53,7 @@ public abstract class HolomonicChassisLogic extends MapleSubsystem {
                 }, this
         ).finallyDo(() -> runChassisSpeeds(new ChassisSpeeds()));
     }
-    
+
 
     public Command driverControlCommandFacingDirection(Translation2d pilotTranslationalInput, Rotation2d desiredFacing, boolean useFieldCentric) {
         // TODO drive by pilot

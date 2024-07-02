@@ -7,8 +7,11 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
 import frc.robot.HardwareIO.Helpers.LoggedGyro;
 import frc.robot.Helpers.ConfigHelpers.MapleConfigFile;
+import org.littletonrobotics.junction.AutoLogOutput;
+import org.littletonrobotics.junction.Logger;
 
 public class SwerveDriveChassis extends HolomonicChassisLogic {
     private final double horizontalWheelsMarginMeters, verticalWheelsMarginMeters;
@@ -49,7 +52,12 @@ public class SwerveDriveChassis extends HolomonicChassisLogic {
 
     @Override
     public void periodic(double dt, boolean enabled) {
-        // TODO here, estimate position with cached
+        for (int measurementCount = 0; measurementCount < odometryThread.getOdometerTimeStampsSincePreviousRobotPeriod().length; measurementCount++)
+            poseEstimator.updateWithTime(
+                    odometryThread.getOdometerTimeStampsSincePreviousRobotPeriod()[measurementCount],
+                    gyro.getRobotFacings()[measurementCount],
+                    getModulesCachedPositionArrays()[measurementCount]
+            );
         super.periodic(dt, enabled);
     }
 
@@ -73,6 +81,7 @@ public class SwerveDriveChassis extends HolomonicChassisLogic {
         super.onReset();
     }
 
+    @AutoLogOutput(key = "/Odometry/LatestSwervePositions")
     private SwerveModulePosition[] getModulesLatestPositions() {
         final SwerveModulePosition[] swerveModulePositions = new SwerveModulePosition[modules.length];
         for (int i = 0; i < swerveModulePositions.length; i++)
@@ -89,5 +98,13 @@ public class SwerveDriveChassis extends HolomonicChassisLogic {
         for (int i = 0; i < swerveModulePositions.length; i++)
             swerveModulePositions[i] = modules[i].getCachedSwerveModulePositions();
         return swerveModulePositions;
+    }
+
+    @AutoLogOutput(key = "/Odometry/MeasuredSwerveStates")
+    private SwerveModuleState[] swerveModuleStates() {
+        final SwerveModuleState[] swerveModuleStates = new SwerveModuleState[modules.length];
+        for (int i = 0; i < modules.length; i++)
+            swerveModuleStates[i] = modules[i].getActualSwerveModuleState();
+        return swerveModuleStates;
     }
 }

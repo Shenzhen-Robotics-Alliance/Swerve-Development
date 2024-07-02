@@ -29,6 +29,13 @@ public class HardwareFactory {
         return new LoggedAbsoluteRotationEncoder(name, canCoderEncoder.toOdometryEncoder());
     }
 
+    public static LoggedGyro createGyroOnOdometry(String name, Pigeon2 pigeon2) {
+        if (Robot.mode != Robot.Mode.REAL)
+            return new LoggedGyro(name);
+        final Pigeon2EncoderImpl pigeon2Encoder = new Pigeon2EncoderImpl(pigeon2);
+        return new LoggedGyro(name, pigeon2Encoder.toOdometryEncoder());
+    }
+
     public static LoggedRelativePositionEncoder createRelativePositionEncoder(String name, TalonFX talonFXInstance, boolean inverted) {
         if (Robot.mode != Robot.Mode.REAL)
             return new LoggedRelativePositionEncoder(name);
@@ -47,6 +54,6 @@ public class HardwareFactory {
         if (Robot.mode != Robot.Mode.REAL)
             return new LoggedGyro(name);
         final Pigeon2EncoderImpl pigeon2Encoder = new Pigeon2EncoderImpl(pigeon2);
-        return new LoggedGyro(name, pigeon2Encoder.toOdometryEncoder());
+        return new LoggedGyro(name, pigeon2Encoder);
     }
 }
