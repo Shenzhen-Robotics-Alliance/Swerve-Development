@@ -1,5 +1,7 @@
 package frc.robot.HardwareIO.Helpers;
 
+import frc.robot.Subsystems.Drive.OdometryThread;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -17,7 +19,9 @@ public final class PeriodicallyUpdatedInputs {
     }
 
     public static void updateInputs() {
+        OdometryThread.odometerLock.lock();
         for (PeriodicallyUpdatedInput input:inputs)
             input.update();
+        OdometryThread.odometerLock.unlock();
     }
 }

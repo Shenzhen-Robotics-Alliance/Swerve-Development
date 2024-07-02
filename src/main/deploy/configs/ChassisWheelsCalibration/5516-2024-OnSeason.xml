@@ -3,6 +3,7 @@
         <maxAngularVelocityRadiansPerSecond type="double">9.42477796076938</maxAngularVelocityRadiansPerSecond>
         <maxAccelerationMetersPerSecondSquared type="double">10.184</maxAccelerationMetersPerSecondSquared>
         <overallGearRatio type="double">6.12</overallGearRatio>
+        <wheelRadiusMeters type="double">0.051</wheelRadiusMeters>
         <chassisWidthMeters type="double">0.876</chassisWidthMeters>
         <maxVelocityMetersPerSecond type="double">4.172</maxVelocityMetersPerSecond>
         <chassisLengthMeters type="double">0.876</chassisLengthMeters>

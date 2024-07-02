@@ -2,6 +2,7 @@ package frc.robot.Subsystems.Drive;
 
 import com.ctre.phoenix6.BaseStatusSignal;
 import frc.robot.Constants;
+import frc.robot.HardwareIO.Helpers.PeriodicallyUpdatedInputs;
 import frc.robot.HardwareIO.Helpers.TimeStampedEncoderReal;
 import frc.robot.Helpers.ArrayHelpers;
 import frc.robot.Helpers.TimeHelpers;
@@ -22,7 +23,7 @@ public class OdometryThread extends Thread {
 
     private final BaseStatusSignal[] odometrySignals;
     private final List<TimeStampedEncoderReal> odometryEncoders;
-    private final Lock timeStampsLock = new ReentrantLock();
+    public static final Lock odometerLock = new ReentrantLock();
     private final Queue<Double> timeStampsQueue = new ConcurrentLinkedDeque<>();
 
     private static OdometryThread instance = null;
@@ -44,6 +45,7 @@ public class OdometryThread extends Thread {
             statusSignal.setUpdateFrequency(Constants.ChassisConfigs.ODOMETRY_FREQ);
 
         setDaemon(true);
+        PeriodicallyUpdatedInputs.register(this::processCachedOdometerMeasurementTimeStamps);
     }
 
     @Override
@@ -67,12 +69,11 @@ public class OdometryThread extends Thread {
                 successful = true;
             }
 
+            odometerLock.lock();
             for (TimeStampedEncoderReal encoder: odometryEncoders)
                 encoder.pollPositionReadingToCache();
-
-            timeStampsLock.lock();
             TimeStampedEncoderReal.offerWithLengthLimit(estimateAverageTimeStamps(new BaseStatusSignal[]{}), timeStampsQueue);
-            timeStampsLock.unlock();
+            odometerLock.unlock();
         }
     }
 
@@ -84,11 +85,13 @@ public class OdometryThread extends Thread {
         return TimeHelpers.getRealTime() - averageLatency;
     }
 
-    public double[] getOdometerMeasurementTimeStamps() {
-        timeStampsLock.lock();
-        final double[] timeStamps = ArrayHelpers.toDoubleArray(new ArrayList<>(timeStampsQueue));
+    private double[] odometerTimeStamps = new double[]{};
+    private void processCachedOdometerMeasurementTimeStamps() {
+        odometerTimeStamps = ArrayHelpers.toDoubleArray(timeStampsQueue.toArray(new Double[0]));
         timeStampsQueue.clear();
-        timeStampsLock.unlock();
-        return timeStamps;
+    }
+
+    public double[] getOdometerTimeStampsSincePreviousRobotPeriod() {
+        return odometerTimeStamps;
     }
 }

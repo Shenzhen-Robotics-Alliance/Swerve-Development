@@ -10,6 +10,13 @@ public class ArrayHelpers {
         return array;
     }
 
+    public static double[] toDoubleArray(Double[] originalArray) {
+        double[] array = new double[originalArray.length];
+        for (int i = 0; i < originalArray.length; i++)
+            array[i] = originalArray[i];
+        return array;
+    }
+
     public static void toDoubleList(double[] data, List<Double> targetList) {
         targetList.clear();
         for (double d:data)

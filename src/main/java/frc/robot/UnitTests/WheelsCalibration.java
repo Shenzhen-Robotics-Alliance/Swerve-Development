@@ -92,6 +92,7 @@ public class WheelsCalibration implements UnitTest {
         if (finished) return;
         final MapleConfigFile.ConfigBlock configBlock = calibrationFile.getBlock("GeneralInformation");
         configBlock.putDoubleConfig("overallGearRatio", Constants.ChassisConfigs.DEFAULT_GEAR_RATIO);
+        configBlock.putDoubleConfig("wheelRadiusMeters", Constants.ChassisConfigs.DEFAULT_WHEEL_RADIUS_METERS);
         configBlock.putDoubleConfig("chassisWidthMeters", Constants.ChassisConfigs.DEFAULT_WIDTH_METERS);
         configBlock.putDoubleConfig("chassisLengthMeters", Constants.ChassisConfigs.DEFAULT_LENGTH_METERS);
         configBlock.putDoubleConfig("maxVelocityMetersPerSecond", Constants.ChassisConfigs.DEFAULT_MAX_VELOCITY_METERS_PER_SECOND);

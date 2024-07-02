@@ -48,10 +48,11 @@ public class RobotContainer {
     }
 
     private static SwerveModuleReal createSwerveModuleCTRE(String moduleName, MapleConfigFile calibrationFile) {
-        final MapleConfigFile.ConfigBlock configBlock = calibrationFile.getBlock(moduleName);
-        final TalonFX drivingTalonFX = new TalonFX(configBlock.getIntConfig("drivingMotorID"), Constants.ChassisConfigs.CHASSIS_CANBUS_NAME),
-                steeringTalonFX = new TalonFX(configBlock.getIntConfig("steeringMotorID"), Constants.ChassisConfigs.CHASSIS_CANBUS_NAME);
-        final CANcoder steeringCANcoder = new CANcoder(configBlock.getIntConfig("steeringEncoderID"), Constants.ChassisConfigs.CHASSIS_CANBUS_NAME);
+        final MapleConfigFile.ConfigBlock currentModuleBlock = calibrationFile.getBlock(moduleName),
+                generalBlock = calibrationFile.getBlock("GeneralInformation");
+        final TalonFX drivingTalonFX = new TalonFX(currentModuleBlock.getIntConfig("drivingMotorID"), Constants.ChassisConfigs.CHASSIS_CANBUS_NAME),
+                steeringTalonFX = new TalonFX(currentModuleBlock.getIntConfig("steeringMotorID"), Constants.ChassisConfigs.CHASSIS_CANBUS_NAME);
+        final CANcoder steeringCANcoder = new CANcoder(currentModuleBlock.getIntConfig("steeringEncoderID"), Constants.ChassisConfigs.CHASSIS_CANBUS_NAME);
 
         final TalonFXConfiguration driveMotorConfig = new TalonFXConfiguration();
         driveMotorConfig.CurrentLimits.SupplyCurrentLimit = Constants.SwerveModuleConfigs.DRIVING_CURRENT_LIMIT;
@@ -65,17 +66,17 @@ public class RobotContainer {
 
         // TODO: network tables alarm if configuration not successful
         final LoggedMotor
-                drivingMotor = HardwareFactory.createMotor(moduleName + "DrivingMotor", drivingTalonFX, false, configBlock.getIntConfig("drivingMotorPortOnPDP")),
+                drivingMotor = HardwareFactory.createMotor(moduleName + "DrivingMotor", drivingTalonFX, false, currentModuleBlock.getIntConfig("drivingMotorPortOnPDP")),
                 steeringMotor = HardwareFactory.createMotor(
                         moduleName + "SteeringMotor", steeringTalonFX,
-                        configBlock.getIntConfig("steeringMotorInverted") != 0,
-                        configBlock.getIntConfig("steeringMotorPortOnPDP")
+                        currentModuleBlock.getIntConfig("steeringMotorInverted") != 0,
+                        currentModuleBlock.getIntConfig("steeringMotorPortOnPDP")
                 );
         final LoggedRelativePositionEncoder drivingEncoder = HardwareFactory.createRelativePositionEncoderOnOdometry(moduleName + "DrivingEncoder", drivingTalonFX, false);
         final LoggedAbsoluteRotationEncoder steeringEncoder = HardwareFactory.createAbsoluteRotationEncoderOnOdometry(moduleName + "SteeringEncoder", steeringCANcoder);
-        steeringEncoder.setZeroPosition(configBlock.getDoubleConfig("steeringEncoderReadingAtOrigin"));
+        steeringEncoder.setZeroPosition(currentModuleBlock.getDoubleConfig("steeringEncoderReadingAtOrigin"));
 
-        return new SwerveModuleReal(moduleName, drivingMotor, steeringMotor, drivingEncoder, steeringEncoder);
+        return new SwerveModuleReal(moduleName, generalBlock.getDoubleConfig("overallGearRatio"), generalBlock.getDoubleConfig("wheelRadiusMeters"), drivingMotor, steeringMotor, drivingEncoder, steeringEncoder);
     }
 
     private void configureBindings() {
@@ -95,8 +96,9 @@ public class RobotContainer {
                 new Translation2d(1,-1)
         );
         XboxController xboxController = new XboxController(1);
-        this.testSwerveImplement.requestSetPoint(swerveDriveKinematics.toWheelSpeeds(new ChassisSpeeds(xboxController.getRightX(), -xboxController.getRightY(), xboxController.getLeftX())).states[0]);
-        Logger.recordOutput("/Odometer/TimeStamps", odometryThread.getOdometerMeasurementTimeStamps());
+        this.testSwerveImplement.requestSetPoint(swerveDriveKinematics.toWheelSpeeds(new ChassisSpeeds(xboxController.getRightX() * 3, -xboxController.getRightY() * 3, xboxController.getLeftX() * 3)).states[0]);
+        Logger.recordOutput("/Odometer/TimeStamps", odometryThread.getOdometerTimeStampsSincePreviousRobotPeriod());
+        Logger.recordOutput("/Odometer/Cached Swerve Positions", testSwerveImplement.getCachedSwerveModulePositions());
     }
 
     public Command getAutonomousCommand() {

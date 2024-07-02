@@ -66,7 +66,7 @@ public abstract class SwerveModule extends MapleSubsystem {
     }
 
     public abstract SwerveModuleState getActualSwerveModuleState();
-    abstract SwerveModulePosition getLatestSwerveModulePosition();
+    public abstract SwerveModulePosition getLatestSwerveModulePosition();
 
-    abstract SwerveModulePosition[] getCachedSwerveModulePositions();
+    public abstract SwerveModulePosition[] getCachedSwerveModulePositions();
 }
