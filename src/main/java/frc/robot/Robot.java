@@ -1,8 +1,6 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.HardwareIO.Helpers.PeriodicallyUpdatedInputs;
 import frc.robot.Subsystems.MapleSubsystem;
 import frc.robot.UnitTests.UnitTest;
 import frc.robot.UnitTests.WheelsCalibration;

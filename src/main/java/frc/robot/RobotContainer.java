@@ -2,28 +2,29 @@ package frc.robot;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.CANcoder;
+import com.ctre.phoenix6.hardware.Pigeon2;
 import com.ctre.phoenix6.hardware.TalonFX;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.wpilibj.PowerDistribution;
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.HardwareIO.Helpers.*;
 import frc.robot.Helpers.ConfigHelpers.MapleConfigFile;
+import frc.robot.Helpers.TimeHelpers;
 import frc.robot.Subsystems.Drive.OdometryThread;
+import frc.robot.Subsystems.Drive.SwerveDriveChassis;
 import frc.robot.Subsystems.Drive.SwerveModuleReal;
 import frc.robot.Subsystems.MapleSubsystem;
-import org.littletonrobotics.junction.Logger;
 
 import java.io.IOException;
 
 public class RobotContainer {
     public static PowerDistribution powerDistribution;
-    private final SwerveModuleReal testSwerveImplement;
+    private final SwerveModuleReal frontLeftModule, frontRightModule, backLeftModule, backRightModule;
+    private final LoggedGyro chassisGyro;
+    private final SwerveDriveChassis chassis;
+
     private final OdometryThread odometryThread;
     public RobotContainer(String chassisName) {
         if (Robot.mode == Robot.Mode.REAL)
@@ -39,7 +40,14 @@ public class RobotContainer {
         } catch (IOException e) {
             throw new RuntimeException("Cannot Find Wheels Calibration File For Chassis: " + chassisName + ", because:" + e.getMessage());
         }
-        this.testSwerveImplement = createSwerveModuleCTRE("FrontLeft", chassisWheelsCalibrationFile);
+
+        this.frontLeftModule = createSwerveModuleCTRE("FrontLeft", chassisWheelsCalibrationFile);
+        this.frontRightModule = createSwerveModuleCTRE("FrontRight", chassisWheelsCalibrationFile);
+        this.backLeftModule = createSwerveModuleCTRE("BackLeft", chassisWheelsCalibrationFile);
+        this.backRightModule = createSwerveModuleCTRE("BackRight", chassisWheelsCalibrationFile);
+        final MapleConfigFile.ConfigBlock generalBlock = chassisWheelsCalibrationFile.getBlock("GeneralInformation");
+        this.chassisGyro = HardwareFactory.createGyro("ChassisGyro", new Pigeon2(generalBlock.getIntConfig("gyroPort")));
+        this.chassis = new SwerveDriveChassis(generalBlock, frontLeftModule, frontRightModule, backLeftModule, backRightModule, chassisGyro);
 
         this.odometryThread = OdometryThread.getInstance();
         odometryThread.start();
@@ -84,21 +92,14 @@ public class RobotContainer {
     }
 
     public void updateRobot() {
-        PeriodicallyUpdatedInputs.updateInputs();
+        PrePeriodicUpdatedInputs.updateInputs();
         MapleSubsystem.checkForOnDisableAndEnable();
         CommandScheduler.getInstance().run();
     }
 
     @Deprecated
     public void testUnitFeatures() {
-        SwerveDriveKinematics swerveDriveKinematics = new SwerveDriveKinematics(
-                new Translation2d(1, 1),
-                new Translation2d(1,-1)
-        );
-        XboxController xboxController = new XboxController(1);
-        this.testSwerveImplement.requestSetPoint(swerveDriveKinematics.toWheelSpeeds(new ChassisSpeeds(xboxController.getRightX() * 3, -xboxController.getRightY() * 3, xboxController.getLeftX() * 3)).states[0]);
-        Logger.recordOutput("/Odometer/TimeStamps", odometryThread.getOdometerTimeStampsSincePreviousRobotPeriod());
-        Logger.recordOutput("/Odometer/Cached Swerve Positions", testSwerveImplement.getCachedSwerveModulePositions());
+
     }
 
     public Command getAutonomousCommand() {

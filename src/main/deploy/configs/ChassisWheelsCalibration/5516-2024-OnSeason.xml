@@ -1,5 +1,6 @@
 <ChassisWheelsCalibration>
     <GeneralInformation>
+        <gyroPort type="int">15</gyroPort>
         <maxAngularVelocityRadiansPerSecond type="double">9.42477796076938</maxAngularVelocityRadiansPerSecond>
         <maxAccelerationMetersPerSecondSquared type="double">10.184</maxAccelerationMetersPerSecondSquared>
         <overallGearRatio type="double">6.12</overallGearRatio>

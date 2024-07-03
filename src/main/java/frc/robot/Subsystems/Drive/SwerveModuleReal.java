@@ -33,7 +33,7 @@ public class SwerveModuleReal extends SwerveModule {
 
     @Override
     public SwerveModuleState getActualSwerveModuleState() {
-        return new SwerveModuleState(driveEncoder.getVelocity(), Rotation2d.fromRadians(steerEncoder.getLatestAbsoluteRotationRadian()));
+        return new SwerveModuleState(driveEncoder.getVelocity() * drivingEncoderRevolutionToMetersFactor, Rotation2d.fromRadians(steerEncoder.getLatestAbsoluteRotationRadian()));
     }
 
     @Override

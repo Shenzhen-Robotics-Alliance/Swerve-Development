@@ -19,11 +19,11 @@ public final class Constants {
         public static final double ODOMETER_TIMEOUT_SECONDS = 0.05;
         public static final double MOTORS_TIMEOUT_SECONDS = 0.25;
         public static final int ODOMETRY_QUEUE_LENGTH_LIMIT = 10;
-        public static final boolean ODOMETRY_WAIT_FOR_TIME_SYNC = true;
+        public static final boolean ODOMETRY_WAIT_FOR_TIME_SYNC = false;
         public static final String CHASSIS_CANBUS_NAME = "ChassisCanivore";
 
+        public static final int DEFAULT_GYRO_PORT = 0;
         public static final double DEFAULT_GEAR_RATIO = 6.12;
-
         public static final double DEFAULT_WHEEL_RADIUS_METERS = 0.051; // 2 inch
         public static final double DEFAULT_BUMPER_WIDTH_METERS = 0.876; // 34.5 inch
         public static final double DEFAULT_LEFT_RIGHT_WHEELS_DISTANCE_METERS = 0.53;

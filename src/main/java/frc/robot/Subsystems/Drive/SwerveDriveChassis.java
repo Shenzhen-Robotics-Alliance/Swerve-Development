@@ -4,10 +4,7 @@ import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
-import edu.wpi.first.math.kinematics.SwerveModulePosition;
-import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.kinematics.*;
 import frc.robot.HardwareIO.Helpers.LoggedGyro;
 import frc.robot.Helpers.ConfigHelpers.MapleConfigFile;
 import org.littletonrobotics.junction.AutoLogOutput;
@@ -22,7 +19,7 @@ public class SwerveDriveChassis extends HolomonicChassisLogic {
     private final SwerveDrivePoseEstimator poseEstimator;
     private final OdometryThread odometryThread;
 
-    protected SwerveDriveChassis(MapleConfigFile.ConfigBlock generalConfigBlock, SwerveModuleReal frontLeft, SwerveModuleReal frontRight, SwerveModuleReal backLeft, SwerveModuleReal backRight, LoggedGyro gyro) {
+    public SwerveDriveChassis(MapleConfigFile.ConfigBlock generalConfigBlock, SwerveModuleReal frontLeft, SwerveModuleReal frontRight, SwerveModuleReal backLeft, SwerveModuleReal backRight, LoggedGyro gyro) {
         super(generalConfigBlock);
 
         this.horizontalWheelsMarginMeters = generalConfigBlock.getDoubleConfig("leftRightWheelsDistanceMeters");
@@ -52,12 +49,14 @@ public class SwerveDriveChassis extends HolomonicChassisLogic {
 
     @Override
     public void periodic(double dt, boolean enabled) {
-        for (int measurementCount = 0; measurementCount < odometryThread.getOdometerTimeStampsSincePreviousRobotPeriod().length; measurementCount++)
+        for (int measurementID = 0; measurementID < odometryThread.getOdometryMeasurementTimeStamps().length; measurementID++)
             poseEstimator.updateWithTime(
-                    odometryThread.getOdometerTimeStampsSincePreviousRobotPeriod()[measurementCount],
-                    gyro.getRobotFacings()[measurementCount],
-                    getModulesCachedPositionArrays()[measurementCount]
+                    odometryThread.getOdometryMeasurementTimeStamps()[measurementID],
+                    // gyro.getRobotFacings()[measurementID],
+                    gyro.getLatestRobotRotation2d(),
+                    getModulesPositionsAtGivenTimeStamp(measurementID)
             );
+        Logger.recordOutput("/Odometry/GyroReadings", gyro.getRobotFacings());
         super.periodic(dt, enabled);
     }
 
@@ -89,19 +88,23 @@ public class SwerveDriveChassis extends HolomonicChassisLogic {
         return swerveModulePositions;
     }
 
-    private double[] getOdometryMeasurementTimeStamps() {
-        return odometryThread.getOdometerTimeStampsSincePreviousRobotPeriod();
-    }
-
-    private SwerveModulePosition[][] getModulesCachedPositionArrays() {
-        final SwerveModulePosition[][] swerveModulePositions = new SwerveModulePosition[modules.length][];
-        for (int i = 0; i < swerveModulePositions.length; i++)
-            swerveModulePositions[i] = modules[i].getCachedSwerveModulePositions();
+    /**
+     * gets the modules' positions at a given measurement timestamp
+     * @param measurementID the id of the measurement, meaning the i th measurement since last robot period
+     * */
+    private SwerveModulePosition[] getModulesPositionsAtGivenTimeStamp(int measurementID) {
+        final SwerveModulePosition[] swerveModulePositions = new SwerveModulePosition[modules.length];
+        for (int moduleID = 0; moduleID < swerveModulePositions.length; moduleID++)
+            swerveModulePositions[moduleID] = modules[moduleID].getCachedSwerveModulePositions()[measurementID];
         return swerveModulePositions;
     }
 
+    /**
+     * gets the latest swerve states measured by the modules
+     * @return the swerve states, in the order FL, FR, BL, BR
+     * */
     @AutoLogOutput(key = "/Odometry/MeasuredSwerveStates")
-    private SwerveModuleState[] swerveModuleStates() {
+    private SwerveModuleState[] getMeasuredSwerveModuleStates() {
         final SwerveModuleState[] swerveModuleStates = new SwerveModuleState[modules.length];
         for (int i = 0; i < modules.length; i++)
             swerveModuleStates[i] = modules[i].getActualSwerveModuleState();

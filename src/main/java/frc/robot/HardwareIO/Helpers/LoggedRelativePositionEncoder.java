@@ -6,7 +6,7 @@ import frc.robot.HardwareIO.Abstractions.TimeStampedEncoder;
 import frc.robot.Helpers.ArrayHelpers;
 import org.littletonrobotics.junction.Logger;
 
-public class LoggedRelativePositionEncoder implements PeriodicallyUpdatedInputs.PeriodicallyUpdatedInput {
+public class LoggedRelativePositionEncoder implements PrePeriodicUpdatedInputs.PrePeriodicUpdateInput {
     private final String sensorPath;
     private boolean isEncoderThreaded;
     private final TimeStampedEncoder timeStampedEncoder;
@@ -30,7 +30,7 @@ public class LoggedRelativePositionEncoder implements PeriodicallyUpdatedInputs.
         this.zeroPosition = 0;
         this.isEncoderThreaded = true;
 
-        PeriodicallyUpdatedInputs.register(this);
+        PrePeriodicUpdatedInputs.register(name, this);
     }
 
     @Override

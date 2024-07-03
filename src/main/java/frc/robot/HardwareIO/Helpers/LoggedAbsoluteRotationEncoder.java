@@ -7,7 +7,7 @@ import frc.robot.Helpers.ArrayHelpers;
 import frc.robot.Helpers.MathHelpers.AngleHelpers;
 import org.littletonrobotics.junction.Logger;
 
-public class LoggedAbsoluteRotationEncoder implements PeriodicallyUpdatedInputs.PeriodicallyUpdatedInput {
+public class LoggedAbsoluteRotationEncoder implements PrePeriodicUpdatedInputs.PrePeriodicUpdateInput {
     private final String sensorPath;
     private boolean updateEncoderInMainThread;
     private final TimeStampedEncoder timeStampedEncoder;
@@ -33,7 +33,7 @@ public class LoggedAbsoluteRotationEncoder implements PeriodicallyUpdatedInputs.
         this.zeroPosition = 0;
         updateEncoderInMainThread = false;
 
-        PeriodicallyUpdatedInputs.register(this);
+        PrePeriodicUpdatedInputs.register(name, this);
     }
 
     @Override

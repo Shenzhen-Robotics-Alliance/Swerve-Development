@@ -22,10 +22,10 @@ public class TimeHelpers {
     }
 
     public static double getTime() {
-        return Logger.getRealTimestamp() / 1_000_000.0;
+        return Logger.getTimestamp() / 1_000_000.0;
     }
 
     public static double getRealTime() {
-        return Logger.getTimestamp() / 1_000_000.0;
+        return Logger.getRealTimestamp() / 1_000_000.0;
     }
 }

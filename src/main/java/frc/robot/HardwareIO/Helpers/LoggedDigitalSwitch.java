@@ -3,7 +3,7 @@ package frc.robot.HardwareIO.Helpers;
 import frc.robot.HardwareIO.Abstractions.RawDigitalSwitch;
 import org.littletonrobotics.junction.Logger;
 
-public class LoggedDigitalSwitch implements PeriodicallyUpdatedInputs.PeriodicallyUpdatedInput {
+public class LoggedDigitalSwitch implements PrePeriodicUpdatedInputs.PrePeriodicUpdateInput {
     private final String name;
     private final RawDigitalSwitch rawDigitalSwitch;
     private final RawDigitalSwitch.RawDigitalInput inputs;
@@ -16,7 +16,7 @@ public class LoggedDigitalSwitch implements PeriodicallyUpdatedInputs.Periodical
         this.name = name;
         this.rawDigitalSwitch = rawDigitalSwitch;
         this.inputs = new RawDigitalSwitch.RawDigitalInput();
-        PeriodicallyUpdatedInputs.register(this);
+        PrePeriodicUpdatedInputs.register(name, this);
     }
 
     @Override

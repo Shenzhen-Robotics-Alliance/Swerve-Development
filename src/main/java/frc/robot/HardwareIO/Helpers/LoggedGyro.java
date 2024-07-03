@@ -8,9 +8,9 @@ import frc.robot.Helpers.ArrayHelpers;
 import frc.robot.Helpers.MathHelpers.AngleHelpers;
 import org.littletonrobotics.junction.Logger;
 
-public class LoggedGyro implements PeriodicallyUpdatedInputs.PeriodicallyUpdatedInput {
+public class LoggedGyro implements PrePeriodicUpdatedInputs.PrePeriodicUpdateInput {
     private final String sensorPath;
-    private boolean isEncoderThreaded;
+    private boolean updatedInMainThread;
     private final TimeStampedEncoder timeStampedEncoder;
     private final TimeStampedEncoder.TimeStampedEncoderInputs inputs;
 
@@ -19,26 +19,28 @@ public class LoggedGyro implements PeriodicallyUpdatedInputs.PeriodicallyUpdated
 
     public LoggedGyro(String name) {
         this(name, new TimeStampedEncoderReplay());
+        this.updatedInMainThread = false;
     }
 
     public LoggedGyro(String name, RawEncoder rawEncoder) {
         this(name, new TimeStampedEncoderReal(null, rawEncoder));
-        this.isEncoderThreaded = false;
+        this.updatedInMainThread = true;
     }
 
     public LoggedGyro(String name, TimeStampedEncoder timeStampedEncoder) {
         this.sensorPath = "RelativePositionEncoders/" + name;
         this.timeStampedEncoder = timeStampedEncoder;
         this.inputs = new TimeStampedEncoder.TimeStampedEncoderInputs();
-        this.isEncoderThreaded = true;
-
+        this.updatedInMainThread = false;
         this.rawReadingAtZeroPosition = 0;
+
+        PrePeriodicUpdatedInputs.register(name, this);
     }
 
 
     @Override
     public void update() {
-        if (!isEncoderThreaded) this.timeStampedEncoder.pollPositionReadingToCache();
+        if (!updatedInMainThread) this.timeStampedEncoder.pollPositionReadingToCache();
 
         this.timeStampedEncoder.processInputsUsingCachedReadings(inputs);
         Logger.processInputs("RawInputs/" + sensorPath, inputs);

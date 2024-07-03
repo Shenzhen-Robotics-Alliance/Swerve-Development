@@ -91,6 +91,7 @@ public class WheelsCalibration implements UnitTest {
     private void writeConfigurationFile() {
         if (finished) return;
         final MapleConfigFile.ConfigBlock configBlock = calibrationFile.getBlock("GeneralInformation");
+        configBlock.putIntConfig("gyroPort", Constants.ChassisConfigs.DEFAULT_GYRO_PORT);
         configBlock.putDoubleConfig("overallGearRatio", Constants.ChassisConfigs.DEFAULT_GEAR_RATIO);
         configBlock.putDoubleConfig("wheelRadiusMeters", Constants.ChassisConfigs.DEFAULT_WHEEL_RADIUS_METERS);
         configBlock.putDoubleConfig("bumperWidthMeters", Constants.ChassisConfigs.DEFAULT_BUMPER_WIDTH_METERS);

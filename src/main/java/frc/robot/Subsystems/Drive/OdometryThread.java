@@ -2,7 +2,7 @@ package frc.robot.Subsystems.Drive;
 
 import com.ctre.phoenix6.BaseStatusSignal;
 import frc.robot.Constants;
-import frc.robot.HardwareIO.Helpers.PeriodicallyUpdatedInputs;
+import frc.robot.HardwareIO.Helpers.PrePeriodicUpdatedInputs;
 import frc.robot.HardwareIO.Helpers.TimeStampedEncoderReal;
 import frc.robot.Helpers.ArrayHelpers;
 import frc.robot.Helpers.TimeHelpers;
@@ -27,6 +27,10 @@ public class OdometryThread extends Thread {
     private final Queue<Double> timeStampsQueue = new ConcurrentLinkedDeque<>();
 
     private static OdometryThread instance = null;
+
+    private int totalUpdates = 0;
+    private long previousMeasurementTime = 0;
+
     public static OdometryThread getInstance() {
         if (instance == null)
             instance = new OdometryThread(registeredEncoders);
@@ -45,11 +49,13 @@ public class OdometryThread extends Thread {
             statusSignal.setUpdateFrequency(Constants.ChassisConfigs.ODOMETRY_FREQ);
 
         setDaemon(true);
-        PeriodicallyUpdatedInputs.register(this::processCachedOdometerMeasurementTimeStamps);
+        PrePeriodicUpdatedInputs.register("odometry thread time stamps measuring", this::processCachedOdometerMeasurementTimeStamps);
     }
 
     @Override
     public synchronized void start() {
+        totalUpdates = 0;
+        previousMeasurementTime = System.nanoTime();
         /* start the thread if there is at least one odometry signal */
         if (!odometryEncoders.isEmpty() && Robot.mode == Robot.Mode.REAL)
             super.start();
@@ -58,22 +64,19 @@ public class OdometryThread extends Thread {
     @Override
     public void run() {
         while (true) {
-            boolean successful;
             if (Constants.ChassisConfigs.ODOMETRY_WAIT_FOR_TIME_SYNC)
-                successful = BaseStatusSignal.waitForAll(Constants.ChassisConfigs.ODOMETER_TIMEOUT_SECONDS, odometrySignals).isOK();
-            else {
+                BaseStatusSignal.waitForAll(Constants.ChassisConfigs.ODOMETER_TIMEOUT_SECONDS, odometrySignals);
+            else
                 BaseStatusSignal.refreshAll(odometrySignals);
-                try {
-                    Thread.sleep((long) (1000 / Constants.ChassisConfigs.ODOMETRY_FREQ));
-                } catch (InterruptedException ignored) {}
-                successful = true;
-            }
 
             odometerLock.lock();
             for (TimeStampedEncoderReal encoder: odometryEncoders)
                 encoder.pollPositionReadingToCache();
             TimeStampedEncoderReal.offerWithLengthLimit(estimateAverageTimeStamps(new BaseStatusSignal[]{}), timeStampsQueue);
             odometerLock.unlock();
+
+            if (!Constants.ChassisConfigs.ODOMETRY_WAIT_FOR_TIME_SYNC)
+                TimeHelpers.delay(1.0 / Constants.ChassisConfigs.ODOMETRY_FREQ);
         }
     }
 
@@ -91,7 +94,9 @@ public class OdometryThread extends Thread {
         timeStampsQueue.clear();
     }
 
-    public double[] getOdometerTimeStampsSincePreviousRobotPeriod() {
+    public double[] getOdometryMeasurementTimeStamps() {
         return odometerTimeStamps;
     }
+
+    // TODO: estimate the average odometry thread update frequency
 }
